@@ -38,22 +38,32 @@ class Producto
         try {
             $stmt = $this->conexion->prepare("
                 SELECT 
-                    p.id_producto as id,
+                    p.id_producto,
+                    p.id_tienda,
                     p.nombre,
                     p.descripcion,
                     p.precio,
+                    p.descuento,
                     p.imagen,
                     p.stock,
-                    u.nombre as artesano,
-                    t.nombre_tienda as tienda
+                    p.activo,
+                    p.fecha_creacion,
+                    t.nombre_tienda,
+                    t.descripcion as descripcion_tienda,
+                    t.imagen_logo,
+                    u.id_usuario,
+                    u.nombre as nombre_artesano,
+                    u.correo,
+                    u.telefono,
+                    u.tipo_usuario
                 FROM productos p
                 INNER JOIN tiendas t ON p.id_tienda = t.id_tienda
                 INNER JOIN usuarios u ON t.id_usuario = u.id_usuario
-                WHERE p.activo = 1
+                WHERE p.activo = 1 AND p.stock > 0
                 ORDER BY p.fecha_creacion DESC
             ");
             $stmt->execute();
-            return $stmt->fetchAll();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             error_log("Error al obtener productos: " . $e->getMessage());
             return $this->obtenerDatosPrueba();
@@ -68,78 +78,127 @@ class Producto
     {
         return [
             [
-                'id' => 1,
                 'id_producto' => 1,
+                'id_tienda' => 1,
                 'nombre' => 'Mola Tradicional Guna',
                 'descripcion' => 'Hermosa mola hecha a mano por artesanas Guna con diseños tradicionales y colores vibrantes.',
                 'precio' => 85.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 0.00,
+                'imagen' => 'public/productos/mola1.jpg',
                 'stock' => 5,
-                'id_tienda' => 1,
-                'id_usuario_tienda' => 1,
-                'artesano' => 'María González',
-                'tienda' => 'Artesanías Guna'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 10:00:00',
+                'nombre_tienda' => 'Artesanías Guna',
+                'descripcion_tienda' => 'Artesanías tradicionales Guna',
+                'imagen_logo' => 'logos/guna_logo.jpg',
+                'id_usuario' => 1,
+                'nombre_artesano' => 'María González',
+                'correo' => 'maria@artesanias.com',
+                'telefono' => '+507 6001-2345',
+                'tipo_usuario' => 'artesano'
             ],
             [
-                'id' => 2,
                 'id_producto' => 2,
+                'id_tienda' => 2,
                 'nombre' => 'Vasija de Cerámica La Arena',
                 'descripcion' => 'Cerámica tradicional de La Arena, Herrera. Perfecta para decoración del hogar.',
                 'precio' => 45.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 5.00,
+                'imagen' => 'public/productos/vasija1.jpg',
                 'stock' => 8,
-                'id_tienda' => 2,
-                'id_usuario_tienda' => 2,
-                'artesano' => 'Carlos Mendoza',
-                'tienda' => 'Cerámica Tradicional'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 09:30:00',
+                'nombre_tienda' => 'Cerámica Tradicional',
+                'descripcion_tienda' => 'Cerámica artesanal de La Arena',
+                'imagen_logo' => 'logos/ceramica_logo.jpg',
+                'id_usuario' => 2,
+                'nombre_artesano' => 'Carlos Mendoza',
+                'correo' => 'carlos@ceramica.com',
+                'telefono' => '+507 6002-3456',
+                'tipo_usuario' => 'artesano'
             ],
             [
-                'id' => 3,
                 'id_producto' => 3,
+                'id_tienda' => 3,
                 'nombre' => 'Sombrero Pintao',
                 'descripcion' => 'Auténtico sombrero pintao tejido a mano en La Pintada, Coclé.',
                 'precio' => 120.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 10.00,
+                'imagen' => 'public/productos/sombrero1.jpg',
                 'stock' => 3,
-                'id_tienda' => 3,
-                'id_usuario_tienda' => 3,
-                'artesano' => 'Ana Rodríguez',
-                'tienda' => 'Sombreros Pintao'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 09:00:00',
+                'nombre_tienda' => 'Sombreros Pintao',
+                'descripcion_tienda' => 'Sombreros tradicionales panameños',
+                'imagen_logo' => 'logos/sombreros_logo.jpg',
+                'id_usuario' => 3,
+                'nombre_artesano' => 'Ana Rodríguez',
+                'correo' => 'ana@sombreros.com',
+                'telefono' => '+507 6003-4567',
+                'tipo_usuario' => 'artesano'
             ],
             [
-                'id' => 4,
+                'id_producto' => 4,
+                'id_tienda' => 1,
                 'nombre' => 'Collar de Semillas',
                 'descripcion' => 'Collar artesanal hecho con semillas naturales de la región.',
                 'precio' => 25.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 0.00,
+                'imagen' => 'public/productos/collar1.jpg',
                 'stock' => 12,
-                'artesano' => 'Luis Herrera',
-                'tienda' => 'Joyería Natural'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 08:30:00',
+                'nombre_tienda' => 'Artesanías Guna',
+                'descripcion_tienda' => 'Artesanías tradicionales Guna',
+                'imagen_logo' => 'logos/guna_logo.jpg',
+                'id_usuario' => 1,
+                'nombre_artesano' => 'María González',
+                'correo' => 'maria@artesanias.com',
+                'telefono' => '+507 6001-2345',
+                'tipo_usuario' => 'artesano'
             ],
             [
-                'id' => 5,
+                'id_producto' => 5,
+                'id_tienda' => 4,
                 'nombre' => 'Canasta de Paja Toquilla',
                 'descripcion' => 'Canasta tejida en paja toquilla, ideal para el hogar.',
                 'precio' => 35.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 3.00,
+                'imagen' => 'public/productos/canasta1.jpg',
                 'stock' => 6,
-                'artesano' => 'Rosa Martínez',
-                'tienda' => 'Tejidos Tradicionales'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 08:00:00',
+                'nombre_tienda' => 'Tejidos Tradicionales',
+                'descripcion_tienda' => 'Tejidos y cestas artesanales',
+                'imagen_logo' => 'logos/tejidos_logo.jpg',
+                'id_usuario' => 4,
+                'nombre_artesano' => 'Rosa Martínez',
+                'correo' => 'rosa@tejidos.com',
+                'telefono' => '+507 6004-5678',
+                'tipo_usuario' => 'artesano'
             ],
             [
-                'id' => 6,
+                'id_producto' => 6,
+                'id_tienda' => 4,
                 'nombre' => 'Hamaca de Algodón',
                 'descripcion' => 'Hamaca tejida en algodón 100% natural, perfecta para descansar.',
                 'precio' => 75.00,
-                'imagen' => '/artesanoDigital/public/placeholder.jpg',
+                'descuento' => 7.50,
+                'imagen' => 'public/productos/hamaca1.jpg',
                 'stock' => 4,
-                'artesano' => 'Pedro Silva',
-                'tienda' => 'Hamacas del Oeste'
+                'activo' => 1,
+                'fecha_creacion' => '2025-07-26 07:30:00',
+                'nombre_tienda' => 'Tejidos Tradicionales',
+                'descripcion_tienda' => 'Tejidos y cestas artesanales',
+                'imagen_logo' => 'logos/tejidos_logo.jpg',
+                'id_usuario' => 4,
+                'nombre_artesano' => 'Rosa Martínez',
+                'correo' => 'rosa@tejidos.com',
+                'telefono' => '+507 6004-5678',
+                'tipo_usuario' => 'artesano'
             ]
         ];
-    }
-
-    /**
+    }    /**
      * Obtiene un producto por ID
      * @param int $id
      * @return array|null
@@ -149,7 +208,7 @@ class Producto
         if ($this->conexion === null) {
             $productos = $this->obtenerDatosPrueba();
             foreach ($productos as $producto) {
-                if ($producto['id'] == $id) {
+                if ($producto['id_producto'] == $id) {
                     return $producto;
                 }
             }
@@ -159,24 +218,31 @@ class Producto
         try {
             $stmt = $this->conexion->prepare("
                 SELECT 
-                    p.id_producto as id,
                     p.id_producto,
+                    p.id_tienda,
                     p.nombre,
                     p.descripcion,
                     p.precio,
+                    p.descuento,
                     p.imagen,
                     p.stock,
-                    p.id_tienda,
-                    t.id_usuario as id_usuario_tienda,
-                    u.nombre as artesano,
-                    t.nombre_tienda as tienda
+                    p.activo,
+                    p.fecha_creacion,
+                    t.nombre_tienda,
+                    t.descripcion as descripcion_tienda,
+                    t.imagen_logo,
+                    u.id_usuario,
+                    u.nombre as nombre_artesano,
+                    u.correo,
+                    u.telefono,
+                    u.tipo_usuario
                 FROM productos p
                 INNER JOIN tiendas t ON p.id_tienda = t.id_tienda
                 INNER JOIN usuarios u ON t.id_usuario = u.id_usuario
                 WHERE p.id_producto = ? AND p.activo = 1
             ");
             $stmt->execute([$id]);
-            return $stmt->fetch() ?: null;
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
         } catch (Exception $e) {
             error_log("Error al obtener producto por ID: " . $e->getMessage());
             return null;

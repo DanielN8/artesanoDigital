@@ -4,6 +4,11 @@
 RewriteEngine On
 RewriteBase /artesanoDigital/
 
+# API Routes - deben ir antes de las reglas generales
+RewriteRule ^api/pedidos/([0-9]+)/(.*)$ api/pedidos.php?path=$1/$2 [QSA,L]
+RewriteRule ^api/pedidos/([0-9]+)$ api/pedidos.php?path=$1 [QSA,L]
+RewriteRule ^api/pedidos/?$ api/pedidos.php [QSA,L]
+
 # Redirigir todas las solicitudes a index.php excepto archivos reales
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

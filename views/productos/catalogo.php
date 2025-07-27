@@ -8,196 +8,476 @@ $estilosAdicionales = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
 require_once __DIR__ . '/../../patrones/ProductoDecorador.php';
 use Patrones\ProductoFactory;
 
-// Preparar productos con el patrón decorador
+// Procesar productos para evitar duplicaciones y obtener datos de la base de datos
+$productosUnicos = [];
 $productosDecorados = [];
+$categorias = [];
+
 if (!empty($productos)) {
+    // Crear un array para evitar duplicados basado en ID
+    $productosVistos = [];
+    
     foreach ($productos as $producto) {
-        // Verificar si el producto tiene un descuento aplicable
-        if (isset($producto['descuento_porcentaje']) && $producto['descuento_porcentaje'] > 0) {
-            // Crear un producto con descuento
-            $productoDecorado = ProductoFactory::crearProducto($producto);
-            $productosDecorados[] = $productoDecorado->obtenerDetalles();
-        } else {
-            // Producto sin descuento
-            $productoDecorado = ProductoFactory::crearProducto($producto);
-            $productosDecorados[] = $productoDecorado->obtenerDetalles();
+        // Validar que el producto tenga ID válido
+        if (!isset($producto['id_producto']) || empty($producto['id_producto'])) {
+            continue;
+        }
+        
+        // Evitar duplicados por ID
+        if (isset($productosVistos[$producto['id_producto']])) {
+            continue;
+        }
+        $productosVistos[$producto['id_producto']] = true;
+        
+        // Validar campos requeridos
+        if (!isset($producto['precio']) || !isset($producto['nombre'])) {
+            continue;
+        }
+        
+        // Calcular precio con descuento si existe
+        $precioFinal = $producto['precio'];
+        $tieneDescuento = false;
+        $porcentajeDescuento = 0;
+        
+        if (isset($producto['descuento']) && $producto['descuento'] > 0) {
+            $tieneDescuento = true;
+            $porcentajeDescuento = round(($producto['descuento'] / $producto['precio']) * 100);
+            $precioFinal = $producto['precio'] - $producto['descuento'];
+        }
+        
+        // Determinar categoría basada en el nombre del producto
+        $categoria = determinarCategoria($producto['nombre'], $producto['descripcion'] ?? '');
+        if (!in_array($categoria, $categorias) && !empty($categoria)) {
+            $categorias[] = $categoria;
+        }
+        
+        // Preparar datos del producto
+        $productoData = [
+            'id_producto' => $producto['id_producto'],
+            'nombre' => $producto['nombre'],
+            'descripcion' => $producto['descripcion'] ?? '',
+            'precio' => $producto['precio'],
+            'precio_final' => $precioFinal,
+            'descuento' => $producto['descuento'] ?? 0,
+            'porcentaje_descuento' => $porcentajeDescuento,
+            'tiene_descuento' => $tieneDescuento,
+            'imagen' => $producto['imagen'] ?? null,
+            'stock' => $producto['stock'] ?? 0,
+            'categoria' => $categoria,
+            'nombre_tienda' => $producto['nombre_tienda'] ?? 'Tienda Artesanal',
+            'nombre_artesano' => $producto['nombre_artesano'] ?? 'Artesano', // Nombre del usuario
+            'activo' => $producto['activo'] ?? 1
+        ];
+        
+        // Solo agregar productos activos con stock positivo
+        if ($productoData['activo'] && $productoData['stock'] > 0) {
+            $productosDecorados[] = $productoData;
         }
     }
+}
+
+// Función para determinar categoría
+function determinarCategoria($nombre, $descripcion) {
+    $nombre_lower = strtolower($nombre);
+    $desc_lower = strtolower($descripcion);
+    
+    if (strpos($nombre_lower, 'mola') !== false || 
+        strpos($nombre_lower, 'huipil') !== false || 
+        strpos($desc_lower, 'tejido') !== false ||
+        strpos($nombre_lower, 'textil') !== false ||
+        strpos($nombre_lower, 'bolso') !== false) {
+        return 'textiles';
+    } 
+    elseif (strpos($nombre_lower, 'vasija') !== false || 
+           strpos($nombre_lower, 'ceramica') !== false || 
+           strpos($desc_lower, 'ceramica') !== false || 
+           strpos($nombre_lower, 'barro') !== false || 
+           strpos($nombre_lower, 'plato') !== false) {
+        return 'ceramica';
+    }
+    elseif (strpos($nombre_lower, 'pulsera') !== false || 
+           strpos($nombre_lower, 'collar') !== false || 
+           strpos($nombre_lower, 'joyeria') !== false || 
+           strpos($desc_lower, 'joyeria') !== false ||
+           strpos($nombre_lower, 'tagua') !== false) {
+        return 'joyeria';
+    }
+    elseif (strpos($nombre_lower, 'sombrero') !== false || 
+           strpos($nombre_lower, 'madera') !== false || 
+           strpos($desc_lower, 'madera') !== false) {
+        return 'tradicional';
+    }
+    
+    return 'otros';
 }
 
 // Iniciar captura de contenido
 ob_start();
 ?>
+<link rel="stylesheet" href="/artesanoDigital/assets/css/catalogo-productos.css">
 
-<!-- Header del catálogo -->
-<section class="catalogo-header">
-    <div class="contenedor">
-        <div class="catalogo-intro">
-            <h1 class="catalogo-titulo">Catálogo de Productos</h1>
-            <p class="catalogo-descripcion">
-                Descubre productos únicos hechos a mano por talentosos artesanos de Panamá Oeste
-            </p>
-        </div>
+<!-- HEADER DEL CATÁLOGO -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para verificar y corregir las rutas de imágenes
+    function verificarImagenes() {
+        const imagenes = document.querySelectorAll('.producto-imagen');
         
-        <!-- Filtros de búsqueda -->
-        <div class="filtros-contenedor">
-            <div class="filtros-grid">
-                    <div class="filtro-grupo">
-                        <label for="busqueda">Buscar producto</label>
-                        <input type="text" id="busqueda" placeholder="Buscar por nombre..." class="input-busqueda">
-                    </div>
-                    <div class="filtro-grupo">
-                        <label for="categoria">Categoría</label>
-                        <select id="categoria" class="select-filtro">
-                            <option value="">Todas las categorías</option>
-                            <option value="textiles">Textiles</option>
-                            <option value="ceramica">Cerámica</option>
-                            <option value="joyeria">Joyería</option>
-                            <option value="madera">Madera</option>
-                        </select>
-                    </div>
-                    <div class="filtro-grupo">
-                        <label for="precio">Precio máximo</label>
-                        <select id="precio" class="select-filtro">
-                            <option value="">Sin límite</option>
-                            <option value="25">Hasta $25</option>
-                            <option value="50">Hasta $50</option>
-                            <option value="100">Hasta $100</option>
-                        </select>
-                    </div>
-                    <div class="filtro-grupo">
-                        <button type="button" class="btn btn-primario" onclick="aplicarFiltros()">
-                            <i class="fas fa-search"></i> Aplicar filtros
-                        </button>
-                    </div>
-            </div>
-        </div>
-    </div>
-</section>
+        imagenes.forEach(img => {
+            // Verificar si la imagen existe
+            fetch(img.src, { method: 'HEAD' })
+                .then(response => {
+                    if (!response.ok) {
+                        console.warn('Imagen no encontrada: ' + img.src);
+                        img.src = '/artesanoDigital/public/placeholder.jpg';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar imagen:', error);
+                    img.src = '/artesanoDigital/public/placeholder.jpg';
+                });
+        });
+    }
+    
+    // Ejecutar la verificación después de cargar la página
+    setTimeout(verificarImagenes, 500);
+});
 
-    <!-- Grid de productos -->
-    <section class="productos-seccion">
-        <div class="contenedor">
-            <div class="productos-resultados">
-                <p class="resultados-info">
-                    Mostrando <?= count($productosDecorados ?? []) ?> productos
-                </p>
-            </div>
+// Función para mostrar la imagen completa en modal cuando se hace clic
+function mostrarImagenCompleta(src) {
+    const modal = document.createElement('div');
+    modal.className = 'imagen-modal';
+    modal.innerHTML = `
+        <div class="imagen-modal-contenido">
+            <span class="cerrar-modal">&times;</span>
+            <img src="${src}" class="imagen-ampliada">
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.cerrar-modal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+</script>
+
+<style>
+/* Estilos para el modal de imagen */
+.imagen-modal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.imagen-modal-contenido {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.imagen-ampliada {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Mejorar visualización de imágenes en catálogo */
+.producto-imagen {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.producto-imagen:hover {
+    transform: scale(1.03);
+}
+</style>
+<header class="catalogo-header">
+    <div class="container">
+        <h1 class="catalogo-titulo">
+            Catálogo de Productos Artesanales
+        </h1>
+        <p class="catalogo-descripcion">
+            Descubre productos únicos hechos a mano por talentosos artesanos de Panamá Oeste
+        </p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="catalogo-layout">
+        <!-- PANEL DE FILTROS -->
+        <aside class="filtros-contenedor">
+            <h3 class="filtros-titulo">
+                <i class="fas fa-filter"></i>
+                Filtrar Productos
+            </h3>
             
-            <div class="productos-grid" id="productosGrid">
-                <?php if (!empty($productosDecorados)): ?>
-                    <?php foreach ($productosDecorados as $producto): ?>
+            <div class="filtros-grid">
+                <!-- Búsqueda por nombre -->
+                <div class="filtro-grupo">
+                    <label for="busqueda">
+                        <i class="fas fa-search"></i>
+                        Buscar producto
+                    </label>
+                    <input type="text" id="busqueda" class="input-busqueda" placeholder="Nombre del producto...">
+                </div>
+
+                <!-- Filtro por categoría -->
+                <div class="filtro-grupo">
+                    <label for="categoria">
+                        <i class="fas fa-tags"></i>
+                        Categoría
+                    </label>
+                    <select id="categoria" class="select-filtro">
+                        <option value="">Todas las categorías</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= htmlspecialchars($cat) ?>">
+                                <?= ucfirst($cat) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Filtro por rango de precio -->
+                <div class="filtro-grupo">
+                    <label for="precio">
+                        <i class="fas fa-dollar-sign"></i>
+                        Rango de precio
+                    </label>
+                    <select id="precio" class="select-filtro">
+                        <option value="">Todos los precios</option>
+                        <option value="25">Hasta $25</option>
+                        <option value="50">$25 - $50</option>
+                        <option value="100">$50 - $100</option>
+                        <option value="999">Más de $100</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por tienda -->
+                <div class="filtro-grupo">
+                    <label for="tienda">
+                        <i class="fas fa-store-alt"></i>
+                        Tienda
+                    </label>
+                    <select id="tienda" class="select-filtro">
+                        <option value="">Todas las tiendas</option>
                         <?php 
-                        // Determinar categoría basada en el nombre o descripción del producto
-                        $categoria = '';
-                        $nombre_lower = strtolower($producto['nombre']);
-                        $desc_lower = strtolower($producto['descripcion']);
-                        
-                        if (strpos($nombre_lower, 'textil') !== false || 
-                            strpos($desc_lower, 'textil') !== false || 
-                            strpos($nombre_lower, 'mola') !== false || 
-                            strpos($nombre_lower, 'huipil') !== false || 
-                            strpos($desc_lower, 'tejido') !== false) {
-                            $categoria = 'textiles';
-                        } 
-                        elseif (strpos($nombre_lower, 'ceramica') !== false || 
-                               strpos($desc_lower, 'ceramica') !== false || 
-                               strpos($nombre_lower, 'vasija') !== false || 
-                               strpos($nombre_lower, 'barro') !== false || 
-                               strpos($nombre_lower, 'plato') !== false) {
-                            $categoria = 'ceramica';
-                        }
-                        elseif (strpos($nombre_lower, 'joyeria') !== false || 
-                               strpos($desc_lower, 'joyeria') !== false || 
-                               strpos($nombre_lower, 'pulsera') !== false || 
-                               strpos($nombre_lower, 'collar') !== false) {
-                            $categoria = 'joyeria';
-                        }
-                        elseif (strpos($nombre_lower, 'madera') !== false || 
-                               strpos($desc_lower, 'madera') !== false) {
-                            $categoria = 'madera';
-                        }
+                        $tiendas = array_unique(array_column($productosDecorados, 'nombre_tienda'));
+                        foreach ($tiendas as $tienda): 
                         ?>
-                        <div class="producto-tarjeta" data-id="<?= $producto['id_producto'] ?>" data-categoria="<?= htmlspecialchars($categoria) ?>">
-                            <?php if (isset($producto['tiene_descuento']) && $producto['tiene_descuento']): ?>
+                            <option value="<?= htmlspecialchars($tienda) ?>">
+                                <?= htmlspecialchars($tienda) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filtros-acciones">
+                <button type="button" class="btn btn-outline" onclick="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i>
+                    Limpiar filtros
+                </button>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="productos-contenido">
+            <!-- Controles de productos -->
+            <div class="productos-controles">
+                <div class="productos-info">
+                    <span class="productos-contador">
+                        <strong id="contador-productos"><?= count($productosDecorados) ?></strong> productos encontrados
+                    </span>
+                </div>
+                
+                <div class="productos-ordenar">
+                    <label for="ordenar">Ordenar por:</label>
+                    <select id="ordenar" class="select-filtro" onchange="ordenarProductos()">
+                        <option value="nombre">Nombre</option>
+                        <option value="precio-asc">Precio: menor a mayor</option>
+                        <option value="precio-desc">Precio: mayor a menor</option>
+                        <option value="descuento">Con descuento</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid de productos -->
+            <?php if (!empty($productosDecorados)): ?>
+                <div class="productos-grid" id="productosGrid">
+                    <?php foreach ($productosDecorados as $producto): ?>
+                        <article class="producto-tarjeta" 
+                                data-nombre="<?= strtolower(htmlspecialchars($producto['nombre'])) ?>"
+                                data-categoria="<?= htmlspecialchars($producto['categoria']) ?>"
+                                data-precio="<?= htmlspecialchars($producto['precio_final']) ?>"
+                                data-tienda="<?= htmlspecialchars($producto['nombre_tienda']) ?>">
+                            
+                            <!-- Badges -->
+                            <?php if ($producto['tiene_descuento']): ?>
                                 <div class="badge-descuento">
-                                    <?php if (isset($producto['descuento_porcentaje'])): ?>
-                                        <?= number_format($producto['descuento_porcentaje'], 0) ?>% OFF
-                                    <?php else: ?>
-                                        Oferta
-                                    <?php endif; ?>
+                                    -<?= $producto['porcentaje_descuento'] ?>%
                                 </div>
                             <?php endif; ?>
+                            
+                            <?php if ($producto['stock'] <= 5): ?>
+                                <div class="badge-stock">
+                                    Últimas <?= $producto['stock'] ?> unidades
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Imagen del producto -->
                             <div class="producto-imagen-contenedor">
-                                <img src="<?= isset($producto['imagen']) && $producto['imagen'] ? '/artesanoDigital/' . htmlspecialchars($producto['imagen']) : '/artesanoDigital/public/placeholder.jpg' ?>" 
+                                <?php
+                                // Determinar la ruta correcta de la imagen
+                                $rutaImagen = '/artesanoDigital/public/placeholder.jpg';
+                                if (!empty($producto['imagen'])) {
+                                    // Si la imagen ya incluye 'public/' o 'uploads/', usar tal como está
+                                    if (strpos($producto['imagen'], 'public/') === 0 || strpos($producto['imagen'], 'uploads/') === 0) {
+                                        $rutaImagen = '/artesanoDigital/' . $producto['imagen'];
+                                    } else {
+                                        // Si no, intentar con uploads/productos/ primero
+                                        $rutaImagen = '/artesanoDigital/uploads/productos/' . $producto['imagen'];
+                                    }
+                                }
+                                ?>
+                                <img src="<?= htmlspecialchars($rutaImagen) ?>" 
                                      alt="<?= htmlspecialchars($producto['nombre']) ?>" 
-                                     class="producto-imagen">
+                                     class="producto-imagen"
+                                     onerror="this.src='/artesanoDigital/public/placeholder.jpg'"
+                                
+                                <!-- Overlay con acciones -->
                                 <div class="producto-overlay">
-                                    <button class="btn-carrito" onclick="agregarAlCarrito(
-                                        <?= $producto['id_producto'] ?>, 
-                                        '<?= addslashes(htmlspecialchars($producto['nombre'])) ?>', 
-                                        <?= isset($producto['tiene_descuento']) && $producto['tiene_descuento'] ? $producto['precio_final'] : $producto['precio'] ?>,
-                                        '<?= isset($producto['imagen']) && $producto['imagen'] ? '/artesanoDigital/' . addslashes(htmlspecialchars($producto['imagen'])) : '/artesanoDigital/public/placeholder.jpg' ?>',
-                                        1,
-                                        <?= $producto['stock'] ?? 0 ?>
-                                    )">
+                                    <button type="button" class="btn-accion btn-vista" onclick="verDetalleProducto(<?= $producto['id_producto'] ?>)" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <?php
+                                    // Preparar la ruta de imagen para JavaScript (escapar comillas)
+                                    $imagenParaJS = '';
+                                    if (!empty($producto['imagen'])) {
+                                        if (strpos($producto['imagen'], 'public/') === 0 || strpos($producto['imagen'], 'uploads/') === 0) {
+                                            $imagenParaJS = '/artesanoDigital/' . $producto['imagen'];
+                                        } else {
+                                            $imagenParaJS = '/artesanoDigital/uploads/productos/' . $producto['imagen'];
+                                        }
+                                    } else {
+                                        $imagenParaJS = '/artesanoDigital/public/placeholder.jpg';
+                                    }
+                                    ?>
+                                    <button type="button" class="btn-accion btn-carrito" onclick="agregarAlCarritoCompleto(<?= $producto['id_producto'] ?>, '<?= htmlspecialchars($producto['nombre']) ?>', <?= $producto['precio_final'] ?>, '<?= htmlspecialchars($imagenParaJS) ?>', 1, <?= $producto['stock'] ?>)" title="Agregar al carrito">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Información del producto -->
                             <div class="producto-info">
-                                <h3 class="producto-nombre"><?= htmlspecialchars($producto['nombre']) ?></h3>
-                                <p class="producto-descripcion"><?= htmlspecialchars(substr($producto['descripcion'], 0, 100)) ?>...</p>
-                                <div class="producto-detalles">
-                                    <?php if (isset($producto['tiene_descuento']) && $producto['tiene_descuento']): ?>
-                                        <div class="producto-precios">
-                                            <span class="precio-original">$<?= number_format($producto['precio_original'], 2) ?></span>
-                                            <span class="precio-descuento">$<?= number_format($producto['precio_final'], 2) ?></span>
-                                        </div>
+                                <div class="producto-header">
+                                    <h3 class="producto-nombre"><?= htmlspecialchars($producto['nombre']) ?></h3>
+                                    <div class="producto-categoria">
+                                        <span class="categoria-tag categoria-<?= $producto['categoria'] ?>">
+                                            <?= ucfirst($producto['categoria']) ?>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <p class="producto-descripcion">
+                                    <?= htmlspecialchars(substr($producto['descripcion'], 0, 100)) ?><?= strlen($producto['descripcion']) > 100 ? '...' : '' ?>
+                                </p>
+
+                                <!-- Precios -->
+                                <div class="producto-precios">
+                                    <?php if ($producto['tiene_descuento']): ?>
+                                        <span class="precio-original">$<?= number_format($producto['precio'], 2) ?></span>
+                                        <span class="precio-descuento">$<?= number_format($producto['precio_final'], 2) ?></span>
+                                        <small class="ahorro">Ahorras $<?= number_format($producto['descuento'], 2) ?></small>
                                     <?php else: ?>
-                                        <p class="producto-precio">$<?= number_format($producto['precio'], 2) ?></p>
+                                        <span class="producto-precio">$<?= number_format($producto['precio'], 2) ?></span>
                                     <?php endif; ?>
-                                    <p class="producto-artesano">Por <?= htmlspecialchars($producto['nombre_artesano'] ?? 'Artesano') ?></p>
-                                    <p class="producto-tienda"><?= htmlspecialchars($producto['nombre_tienda'] ?? 'Tienda Artesanal') ?></p>
                                 </div>
-                                <div class="producto-acciones">
-                                    <button class="btn btn-primario" onclick="agregarAlCarrito(
-                                        <?= $producto['id_producto'] ?>, 
-                                        '<?= addslashes(htmlspecialchars($producto['nombre'])) ?>', 
-                                        <?= isset($producto['tiene_descuento']) && $producto['tiene_descuento'] ? $producto['precio_final'] : $producto['precio'] ?>,
-                                        '<?= isset($producto['imagen']) && $producto['imagen'] ? '/artesanoDigital/' . addslashes(htmlspecialchars($producto['imagen'])) : '/artesanoDigital/public/placeholder.jpg' ?>',
-                                        1,
-                                        <?= $producto['stock'] ?? 0 ?>
-                                    )">
-                                        <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                                    </button>
+
+                                <!-- Metadatos -->
+                                <div class="producto-metadatos">
+                                    <div class="tienda-info">
+                                        <i class="fas fa-store"></i>
+                                        <span><?= htmlspecialchars($producto['nombre_tienda']) ?></span>
+                                    </div>
+                                    <div class="stock-info">
+                                        <i class="fas fa-boxes"></i>
+                                        <span><?= $producto['stock'] ?> disponibles</span>
+                                    </div>
                                 </div>
+
+                                <!-- Botón agregar al carrito -->
+                                <button type="button" class="btn btn-primary btn-agregar" onclick="agregarAlCarritoCompleto(<?= $producto['id_producto'] ?>, '<?= htmlspecialchars($producto['nombre']) ?>', <?= $producto['precio_final'] ?>, '<?= htmlspecialchars($imagenParaJS) ?>', 1, <?= $producto['stock'] ?>)">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Agregar al carrito
+                                </button>
                             </div>
-                        </div>
+                        </article>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="productos-vacio">
-                        <h3>No hay productos disponibles</h3>
-                        <p>Pronto tendremos productos increíbles de nuestros artesanos.</p>
-                        <a href="/artesanoDigital/" class="btn btn-primario">Volver al Inicio</a>
+                </div>
+            <?php else: ?>
+                <!-- Estado vacío -->
+                <div class="productos-vacio">
+                    <div class="vacio-icono">
+                        <i class="fas fa-box-open"></i>
                     </div>
-                <?php endif; ?>
-            </div>
-            
-            <!-- Paginación -->
-            <div class="paginacion">
-                <button class="btn btn-outline" onclick="cargarMasProductos()">
-                    Cargar Más Productos
-                </button>
-            </div>
-        </div>
-    </section>
+                    <h3 class="vacio-titulo">No hay productos disponibles</h3>
+                    <p class="vacio-descripcion">
+                        Actualmente no tenemos productos en nuestro catálogo. 
+                        Vuelve pronto para descubrir nuevas creaciones artesanales.
+                    </p>
+                    <div class="vacio-acciones">
+                        <a href="/artesanoDigital/" class="btn btn-primary">
+                            <i class="fas fa-home"></i>
+                            Volver al inicio
+                        </a>
+                        <button type="button" class="btn btn-outline" onclick="location.reload()">
+                            <i class="fas fa-sync-alt"></i>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </main>
+    </div>
+</div>
+
+<!-- Toast Container para notificaciones -->
+<div class="toast-container"></div>
 
 <script>
+// Variables globales
+let productosOriginales = Array.from(document.querySelectorAll('.producto-tarjeta'));
+
 function aplicarFiltros() {
     const terminoBusqueda = document.getElementById('busqueda').value.toLowerCase();
     const categoria = document.getElementById('categoria').value;
     const precioMaximo = document.getElementById('precio').value;
+    const tiendaSeleccionada = document.getElementById('tienda').value;
     
     const productos = document.querySelectorAll('.producto-tarjeta');
     let contadorVisibles = 0;
@@ -206,8 +486,8 @@ function aplicarFiltros() {
         let mostrar = true;
         
         // Filtrar por término de búsqueda
-        if (terminoBusqueda) {
-            const nombre = producto.querySelector('.producto-nombre').textContent.toLowerCase();
+        if (terminoBusqueda && mostrar) {
+            const nombre = producto.getAttribute('data-nombre') || '';
             const descripcion = producto.querySelector('.producto-descripcion').textContent.toLowerCase();
             if (!nombre.includes(terminoBusqueda) && !descripcion.includes(terminoBusqueda)) {
                 mostrar = false;
@@ -222,22 +502,29 @@ function aplicarFiltros() {
             }
         }
         
+        // Filtrar por tienda
+        if (tiendaSeleccionada && mostrar) {
+            const tiendaProducto = producto.getAttribute('data-tienda');
+            if (tiendaProducto !== tiendaSeleccionada) {
+                mostrar = false;
+            }
+        }
+        
         // Filtrar por precio
         if (precioMaximo && mostrar) {
-            // Verificar si tiene descuento
-            const precioDescuento = producto.querySelector('.precio-descuento');
-            let precioText;
+            const precio = parseFloat(producto.getAttribute('data-precio'));
+            const rangos = {
+                '25': [0, 25],
+                '50': [25, 50],
+                '100': [50, 100],
+                '999': [100, 999999]
+            };
             
-            if (precioDescuento) {
-                // Si tiene descuento, usar el precio con descuento
-                precioText = precioDescuento.textContent.replace('$', '');
-            } else {
-                // Si no tiene descuento, usar el precio normal
-                precioText = producto.querySelector('.producto-precio').textContent.replace('$', '');
-            }
-            const precio = parseFloat(precioText);
-            if (precio > parseFloat(precioMaximo)) {
-                mostrar = false;
+            if (rangos[precioMaximo]) {
+                const [min, max] = rangos[precioMaximo];
+                if (precio < min || precio > max) {
+                    mostrar = false;
+                }
             }
         }
         
@@ -251,610 +538,278 @@ function aplicarFiltros() {
     });
     
     // Actualizar contador de resultados
-    const resultadosInfo = document.querySelector('.resultados-info');
-    if (resultadosInfo) {
-        resultadosInfo.textContent = `Mostrando ${contadorVisibles} productos`;
+    actualizarContadorResultados(contadorVisibles);
+}
+
+function limpiarFiltros() {
+    document.getElementById('busqueda').value = '';
+    document.getElementById('categoria').value = '';
+    document.getElementById('precio').value = '';
+    document.getElementById('tienda').value = '';
+    document.getElementById('ordenar').value = 'nombre';
+    
+    // Mostrar todos los productos
+    const productos = document.querySelectorAll('.producto-tarjeta');
+    productos.forEach(producto => {
+        producto.style.display = 'block';
+    });
+    
+    actualizarContadorResultados(productos.length);
+}
+
+function ordenarProductos() {
+    const criterio = document.getElementById('ordenar').value;
+    const contenedor = document.getElementById('productosGrid');
+    const productos = Array.from(contenedor.querySelectorAll('.producto-tarjeta:not([style*="display: none"])'));
+    
+    productos.sort((a, b) => {
+        switch (criterio) {
+            case 'nombre':
+                return a.getAttribute('data-nombre').localeCompare(b.getAttribute('data-nombre'));
+            case 'precio-asc':
+                return parseFloat(a.getAttribute('data-precio')) - parseFloat(b.getAttribute('data-precio'));
+            case 'precio-desc':
+                return parseFloat(b.getAttribute('data-precio')) - parseFloat(a.getAttribute('data-precio'));
+            case 'descuento':
+                const aDescuento = a.querySelector('.badge-descuento') ? 1 : 0;
+                const bDescuento = b.querySelector('.badge-descuento') ? 1 : 0;
+                return bDescuento - aDescuento;
+            default:
+                return 0;
+        }
+    });
+    
+    // Reorganizar los elementos en el DOM
+    productos.forEach(producto => {
+        contenedor.appendChild(producto);
+    });
+}
+
+function actualizarContadorResultados(contador) {
+    const contadorElemento = document.getElementById('contador-productos');
+    if (contadorElemento) {
+        contadorElemento.textContent = contador;
     }
 }
 
-function cargarMasProductos() {
-    // Implementar carga de más productos
-    console.log('Cargando más productos...');
-    mostrarMensaje('Cargando más productos...', 'info');
+function verDetalleProducto(idProducto) {
+    // Redirigir a la vista de detalle del producto
+    window.location.href = `/artesanoDigital/productos/detalle?id=${idProducto}`;
 }
 
-// Función para agregar al carrito con detalles del producto
-// Nota: Esta función ahora recibe todos los parámetros directamente desde el botón
-function agregarAlCarrito(idProducto, nombre, precio, imagen, cantidad = 1, stock = 0) {
-    // Validar que tengamos toda la información necesaria
+function cargarMasProductos() {
+    mostrarMensaje('Función de carga implementada próximamente...', 'info');
+}
+
+// Función específica para el catálogo que usa la API del carrito
+function agregarAlCarritoCompleto(idProducto, nombre, precio, imagen, cantidad = 1, stock = 0) {
+    // Validar parámetros
     if (!idProducto || !nombre || isNaN(precio)) {
-        console.error('Faltan datos para agregar al carrito');
         mostrarMensaje('Error: Datos insuficientes para agregar al carrito', 'error');
         return;
     }
     
-    // Identificar el usuario actual para usar la clave correcta
-    const usuarioId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null' ?>;
-    const carritoKey = usuarioId ? `carrito_${usuarioId}` : 'carrito_invitado';
-    
-    // Agregar al carrito local con la clave específica del usuario
-    let carrito = JSON.parse(localStorage.getItem(carritoKey)) || [];
-    let productoExistente = carrito.find(item => item.id === idProducto);
-    
-    if (productoExistente) {
-        productoExistente.cantidad += cantidad;
-    } else {
-        carrito.push({
-            id: idProducto,
-            nombre: nombre,
-            precio: precio,
-            imagen: imagen,
-            cantidad: cantidad,
-            stock: stock
-        });
+    // Validar stock
+    if (stock <= 0) {
+        mostrarMensaje('Producto sin stock disponible', 'warning');
+        return;
     }
+
+    // Obtener el botón específico para mostrar estado de carga
+    const boton = document.querySelector(`[onclick*="agregarAlCarritoCompleto(${idProducto}"]`);
+    const textoOriginal = boton ? boton.innerHTML : '';
     
-    // Guardar con la clave específica del usuario
-    localStorage.setItem(carritoKey, JSON.stringify(carrito));
-    // Mantener compatibilidad con el código existente
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    
-    // Sincronizar con el servidor
-    fetch('/artesanoDigital/controllers/checkout.php', {
+    // Deshabilitar botón y mostrar carga
+    if (boton) {
+        boton.disabled = true;
+        boton.classList.add('loading');
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agregando...';
+    }
+
+    // Llamar a la API del carrito
+    fetch('/artesanoDigital/api/carrito.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest'
+            'Content-Type': 'application/json',
         },
-        body: `accion=agregar_producto&id_producto=${idProducto}&cantidad=${cantidad}`
+        body: JSON.stringify({
+            accion: 'agregar',
+            id_producto: idProducto,
+            cantidad: cantidad
+        })
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
         if (data.exitoso) {
-            actualizarContadorCarrito(data.total_productos);
-            actualizarMiniCarrito();
-            mostrarMensaje(`${nombre} agregado al carrito`, 'success');
+            mostrarMensaje(data.mensaje || 'Producto agregado al carrito', 'success');
+            // Actualizar contador del carrito si existe
+            if (data.carrito && data.carrito.cantidad_total) {
+                actualizarContadorCarrito(data.carrito.cantidad_total);
+            }
+            
+            // Cambiar botón temporalmente a "Agregado"
+            if (boton) {
+                boton.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+                boton.classList.remove('loading');
+                boton.classList.add('success');
+                
+                setTimeout(() => {
+                    boton.innerHTML = textoOriginal;
+                    boton.classList.remove('success');
+                    boton.disabled = false;
+                }, 2000);
+            }
         } else {
-            mostrarMensaje(data.mensaje || 'No se pudo agregar al carrito', 'error');
+            mostrarMensaje(data.mensaje || 'Error al agregar producto', 'error');
+            // Restaurar botón
+            if (boton) {
+                boton.innerHTML = textoOriginal;
+                boton.classList.remove('loading');
+                boton.disabled = false;
+            }
         }
     })
     .catch(error => {
-        console.error('Error al agregar producto:', error);
-        mostrarMensaje('Error al agregar el producto', 'error');
+        console.error('Error:', error);
+        mostrarMensaje('Error de conexión al agregar producto', 'error');
+        // Restaurar botón
+        if (boton) {
+            boton.innerHTML = textoOriginal;
+            boton.classList.remove('loading');
+            boton.disabled = false;
+        }
     });
-    
-    // Actualizar el contador y mini carrito manualmente también
-    const carritoItems = carrito.reduce((total, item) => total + item.cantidad, 0);
-    const contadorCarrito = document.getElementById('carrito-contador');
-    if (contadorCarrito) {
-        contadorCarrito.textContent = carritoItems;
-    }
-    
-    // Intentar actualizar el mini carrito si la función está disponible
-    if (typeof actualizarMiniCarrito === 'function') {
-        actualizarMiniCarrito();
-    }
-    
-    mostrarMensaje(`${nombre} agregado al carrito`, 'success');
 }
 
-// Función para mostrar mensajes toast
+function actualizarContadorCarrito(total) {
+    const contadores = document.querySelectorAll('#carrito-contador, .carrito-contador');
+    contadores.forEach(contador => {
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'inline' : 'none';
+    });
+}
+
+function actualizarContadorCarrito(total) {
+    const contadores = document.querySelectorAll('#carrito-contador, .carrito-contador');
+    contadores.forEach(contador => {
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'inline' : 'none';
+    });
+}
+
+// Función mejorada para mostrar mensajes
 function mostrarMensaje(mensaje, tipo = 'info') {
-    // Crear elemento de toast
+    // Remover mensajes anteriores
+    const mensajesAnteriores = document.querySelectorAll('.toast');
+    mensajesAnteriores.forEach(toast => toast.remove());
+    
+    // Crear nuevo toast
     const toast = document.createElement('div');
     toast.className = `toast toast-${tipo}`;
     toast.innerHTML = `
         <div class="toast-contenido">
+            <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : tipo === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
             <span class="toast-mensaje">${mensaje}</span>
-            <button class="toast-cerrar">&times;</button>
+            <button class="toast-cerrar" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     `;
     
-    // Agregar al contenedor de toasts
-    const toastContainer = document.querySelector('.toast-container') || (() => {
+    // Agregar estilos si no existen
+    if (!document.querySelector('.toast-container')) {
         const container = document.createElement('div');
         container.className = 'toast-container';
         document.body.appendChild(container);
-        return container;
-    })();
+    }
     
-    toastContainer.appendChild(toast);
+    document.querySelector('.toast-container').appendChild(toast);
     
-    // Mostrar con animación
-    setTimeout(() => toast.classList.add('toast-mostrar'), 10);
-    
-    // Auto cerrar después de 3 segundos
+    // Auto cerrar
     setTimeout(() => {
-        toast.classList.remove('toast-mostrar');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+// Inicializar funcionalidades al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtro en tiempo real para búsqueda
+    document.getElementById('busqueda').addEventListener('input', aplicarFiltros);
     
-    // Evento para cerrar manualmente
-    toast.querySelector('.toast-cerrar').addEventListener('click', () => {
-        toast.classList.remove('toast-mostrar');
-        setTimeout(() => toast.remove(), 300);
+    // Eventos para todos los filtros
+    ['categoria', 'precio', 'tienda'].forEach(id => {
+        document.getElementById(id).addEventListener('change', aplicarFiltros);
+    });
+});
+
+function actualizarContadorCarrito(total) {
+    const contadores = document.querySelectorAll('#carrito-contador, .carrito-contador');
+    contadores.forEach(contador => {
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'inline' : 'none';
     });
 }
+
+// Función mejorada para mostrar mensajes
+function mostrarMensaje(mensaje, tipo = 'info') {
+    // Remover mensajes anteriores
+    const mensajesAnteriores = document.querySelectorAll('.toast');
+    mensajesAnteriores.forEach(toast => toast.remove());
+    
+    // Crear nuevo toast
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    toast.innerHTML = `
+        <div class="toast-contenido">
+            <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : tipo === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+            <span class="toast-mensaje">${mensaje}</span>
+            <button class="toast-cerrar" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Agregar estilos si no existen
+    if (!document.querySelector('.toast-container')) {
+        const container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    document.querySelector('.toast-container').appendChild(toast);
+    
+    // Auto cerrar
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+// Inicializar funcionalidades al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtro en tiempo real para búsqueda
+    document.getElementById('busqueda').addEventListener('input', aplicarFiltros);
+    
+    // Eventos para todos los filtros
+    ['categoria', 'precio', 'tienda'].forEach(id => {
+        document.getElementById(id).addEventListener('change', aplicarFiltros);
+    });
+});
 </script>
 
 <?php 
 // Capturar el contenido y preparar para incluir base.php
 $contenido = ob_get_clean();
 
-// Agregar estilos específicos para el catálogo
-$estilosAdicionales[] = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
-
-// Añadir estilos internos para el head
-$estilosInternos = '<style>
-/* Estilos para la página de catálogo */
-.catalogo-header {
-    background: #f5f7fa;
-    padding: 2rem 0;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #eaedf2;
-    clear: both;
-    position: relative;
-    z-index: 1; /* Asegurar que esté por debajo del header principal */
-    margin-top: 90px; /* Asegurar espacio suficiente después del header fijo */
-}
-
-.catalogo-titulo {
-    font-size: 2.2rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-.catalogo-descripcion {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto 2rem;
-    color: #666;
-    font-size: 1.1rem;
-    line-height: 1.5;
-}
-
-.filtros-contenedor {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    margin-top: 2rem;
-}
-
-.filtros-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    align-items: end;
-}
-
-.filtro-grupo {
-    display: flex;
-    flex-direction: column;
-}
-
-.filtro-grupo label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.input-busqueda, .select-filtro {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-family: "Inter", sans-serif;
-    font-size: 0.95rem;
-}
-
-.input-busqueda:focus, .select-filtro:focus {
-    outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-}
-
-.productos-seccion {
-    padding: 2rem 0;
-}
-
-.productos-resultados {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.resultados-info {
-    font-size: 0.95rem;
-    color: #666;
-}
-
-.productos-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-@media (min-width: 576px) {
-    .productos-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 992px) {
-    .productos-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-.producto-tarjeta {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.producto-tarjeta:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-}
-
-.producto-imagen-contenedor {
-    position: relative;
-    height: 220px;
-    overflow: hidden;
-}
-
-.producto-imagen {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.producto-tarjeta:hover .producto-imagen {
-    transform: scale(1.05);
-}
-
-.producto-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.producto-tarjeta:hover .producto-overlay {
-    opacity: 1;
-}
-
-.btn-carrito {
-    background: white;
-    color: #333;
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
-}
-
-.btn-carrito:hover {
-    background: #4a90e2;
-    color: white;
-    transform: scale(1.05);
-}
-
-.producto-info {
-    padding: 1.25rem;
-}
-
-.producto-nombre {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 0.75rem;
-    color: #333;
-}
-
-.producto-descripcion {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-}
-
-.producto-detalles {
-    margin-bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.producto-precio {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: #4a90e2;
-    margin: 0;
-}
-
-/* Estilos para productos con descuento */
-.badge-descuento {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #FF3B30;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    z-index: 2;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.precio-original {
-    text-decoration: line-through;
-    color: #999;
-    margin-right: 0.75rem;
-    font-size: 0.9rem;
-}
-
-.precio-descuento {
-    color: #e63946;
-    font-weight: 700;
-}
-
-.producto-artesano, .producto-tienda {
-    font-size: 0.85rem;
-    color: #666;
-    margin: 0;
-}
-
-.producto-acciones {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.btn {
-    flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    font-weight: 500;
-    text-align: center;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    transition: all 0.2s ease;
-    text-decoration: none;
-}
-
-.btn i {
-    font-size: 14px;
-}
-
-.btn-primario {
-    background: #4a90e2;
-    color: white;
-    border: none;
-}
-
-.btn-primario:hover {
-    background: #357ab8;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 1px solid #4a90e2;
-    color: #4a90e2;
-}
-
-.btn-outline:hover {
-    background: #4a90e2;
-    color: white;
-}
-
-.paginacion {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-}
-
-.productos-vacio {
-    text-align: center;
-    padding: 3rem;
-    background: #f9f9f9;
-    border-radius: 12px;
-}
-
-.productos-vacio h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #555;
-}
-
-.productos-vacio p {
-    color: #777;
-    margin-bottom: 2rem;
-}
-
-/* Toast notifications */
-.toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-}
-
-.toast {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin-top: 10px;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.toast-mostrar {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.toast-contenido {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.toast-mensaje {
-    flex: 1;
-    margin-right: 10px;
-}
-
-.toast-cerrar {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    color: #777;
-}
-
-.toast-success {
-    border-left: 4px solid #2ecc71;
-}
-
-.toast-error {
-    border-left: 4px solid #e74c3c;
-}
-
-.toast-info {
-    border-left: 4px solid #3498db;
-}
-
-.toast-warning {
-    border-left: 4px solid #f39c12;
-}
-
-/* Estilos adicionales para mejorar los productos */
-.producto-descripcion {
-    font-size: 0.9rem;
-    color: #666;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-    flex: 1;
-}
-
-.producto-info {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 1.25rem;
-}
-
-.producto-detalles {
-    margin-top: auto;
-    margin-bottom: 1rem;
-}
-
-.producto-precios {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.precio-original {
-    text-decoration: line-through;
-    color: #888;
-    font-size: 0.9rem;
-    margin-right: 8px;
-}
-
-.precio-descuento {
-    color: #FF3B30;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-.producto-precio {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 0.5rem;
-}
-
-.producto-artesano, .producto-tienda {
-    font-size: 0.85rem;
-    color: #666;
-    margin: 0.25rem 0;
-}
-
-.btn-primario:hover {
-    background: #357ab8;
-    transform: translateY(-2px);
-}
-
-/* Responsive */
-@media (max-width: 991px) {
-    .filtros-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-}
-
-@media (max-width: 992px) {
-    .productos-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .catalogo-titulo {
-        font-size: 1.8rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .filtros-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .productos-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .producto-acciones {
-        flex-direction: column;
-    }
-    
-    .catalogo-titulo {
-        font-size: 1.6rem;
-    }
-}
-</style>';
-
-// Ahora incluimos el layout base con nuestro contenido y estilos
+// Agregar estilos específicos para el catálogo y componentes adicionales
+$estilosAdicionales = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+    '/artesanoDigital/assets/css/catalogo-productos.css'
+];
+
+// Incluir el layout base con nuestro contenido y estilos
 include __DIR__ . '/../layouts/base.php';
+?>

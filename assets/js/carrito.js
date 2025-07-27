@@ -529,7 +529,7 @@ function actualizarTotalCarrito() {
         }
         
         const impuestos = total * 0.07; // 7% ITBMS en Panamá
-        const envio = total > 0 ? 5.00 : 0.00; // Cargo fijo de envío
+        const envio = 0.00; // Envío gratis
         const totalFinal = total + impuestos + envio;
         
         // Actualizar los elementos visuales

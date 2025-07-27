@@ -29,13 +29,52 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp&display=swap" rel="stylesheet">
 
     <!-- Override CSS: quitar estilos globales de button y fijar carrito -->
     <style>
         /* Forzar tema claro */
         html { color-scheme: light !important; }
         body { background-color: #faf8f5 !important; color: #2c2c2c !important; font-family: 'Inter', sans-serif; }
+
+        /* Material Icons styling */
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+        }
+        
+        .material-icons-outlined {
+            font-family: 'Material Icons Outlined';
+        }
+        
+        .material-icons-round {
+            font-family: 'Material Icons Round';
+        }
+        
+        .material-icons-sharp {
+            font-family: 'Material Icons Sharp';
+        }
+
+        /* Tamaños de iconos */
+        .material-icons.small { font-size: 18px; }
+        .material-icons.medium { font-size: 24px; }
+        .material-icons.large { font-size: 36px; }
+        .material-icons.xl { font-size: 48px; }
 
         /* Header fijo arriba */
         .header-principal {
@@ -259,10 +298,6 @@ if (session_status() === PHP_SESSION_NONE) {
             gap: 0.5rem;
         }
         
-        .btn-sm {
-            padding: 0.35rem 0.75rem;
-            font-size: 0.9rem;
-        }
         
         .dropdown-toggle {
             all: unset;
@@ -371,13 +406,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <a href="/artesanoDigital/registro" class="btn btn-primary">Registrarse</a>
                             </div>
                         <?php endif; ?>
-
-                        <!-- Botón menú móvil (si aplica) -->
-                        <button class="btn-menu-movil" id="btnMenuMovil">
-                            <span class="hamburger-line"></span>
-                            <span class="hamburger-line"></span>
-                            <span class="hamburger-line"></span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -653,54 +681,66 @@ if (session_status() === PHP_SESSION_NONE) {
     
     // Función para agregar un producto al carrito
     function agregarAlCarrito(idProducto, nombre, precio, imagen, cantidad = 1, stock = 0) {
-        // Crear identificador único para este usuario
-        const usuarioId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null' ?>;
-        const carritoKey = usuarioId ? `carrito_${usuarioId}` : 'carrito_invitado';
-        
-        // Agregar al carrito local con key específico para este usuario
-        let carrito = JSON.parse(localStorage.getItem(carritoKey)) || [];
-        let productoExistente = carrito.find(item => item.id === idProducto);
-        
-        if (productoExistente) {
-            productoExistente.cantidad += cantidad;
-        } else {
-            carrito.push({
-                id: idProducto,
-                nombre: nombre,
-                precio: precio,
-                imagen: imagen,
-                cantidad: cantidad,
-                stock: stock
-            });
+        // Validar que tenemos al menos el ID del producto
+        if (!idProducto) {
+            mostrarMensaje('Error: ID del producto requerido', 'error');
+            return;
         }
         
-        // Guardar con la clave específica del usuario
-        localStorage.setItem(carritoKey, JSON.stringify(carrito));
-        // Mantener compatibilidad con el código existente
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        
-        // Sincronizar con el servidor
-        fetch('/artesanoDigital/controllers/checkout.php', {
+        // Usar la API del carrito para consistencia
+        fetch('/artesanoDigital/api/carrito.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest'
+                'Content-Type': 'application/json',
             },
-            body: `accion=agregar_producto&id_producto=${idProducto}&cantidad=${cantidad}`
+            body: JSON.stringify({
+                accion: 'agregar',
+                id_producto: idProducto,
+                cantidad: cantidad || 1
+            })
         })
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
             if (data.exitoso) {
-                actualizarContadorCarrito(data.total_productos);
+                // Actualizar localStorage para compatibilidad
+                if (nombre && precio) {
+                    const usuarioId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null' ?>;
+                    const carritoKey = usuarioId ? `carrito_${usuarioId}` : 'carrito_invitado';
+                    
+                    let carrito = JSON.parse(localStorage.getItem(carritoKey)) || [];
+                    let productoExistente = carrito.find(item => item.id === idProducto);
+                    
+                    if (productoExistente) {
+                        productoExistente.cantidad += cantidad || 1;
+                    } else {
+                        carrito.push({
+                            id: idProducto,
+                            nombre: nombre,
+                            precio: precio,
+                            imagen: imagen,
+                            cantidad: cantidad || 1,
+                            stock: stock
+                        });
+                    }
+                    
+                    localStorage.setItem(carritoKey, JSON.stringify(carrito));
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                }
+                
+                // Actualizar UI
+                if (data.carrito && data.carrito.cantidad_total) {
+                    actualizarContadorCarrito(data.carrito.cantidad_total);
+                }
                 actualizarMiniCarrito();
-                mostrarMensaje('Producto agregado al carrito', 'success');
+                mostrarMensaje(data.mensaje || 'Producto agregado al carrito', 'success');
+                
             } else {
-                mostrarMensaje(data.mensaje || 'No se pudo agregar al carrito', 'error');
+                mostrarMensaje(data.mensaje || 'Error al agregar producto al carrito', 'error');
             }
         })
         .catch(error => {
             console.error('Error al agregar producto:', error);
-            mostrarMensaje('Error al agregar el producto', 'error');
+            mostrarMensaje('Error de conexión al agregar producto', 'error');
         });
     }
     </script>

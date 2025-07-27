@@ -327,3 +327,33 @@ function eliminarProducto(idProducto) {
         alert('Error al comunicarse con el servidor');
     });
 }
+// ===== FUNCIONES GENERALES DEL DASHBOARD =====
+
+// Funciones de utilidad para el dashboard general
+function notificarExito(mensaje) {
+    console.log('ÉXITO:', mensaje);
+    // Aquí puedes implementar un sistema de notificaciones más sofisticado
+}
+
+function notificarError(mensaje) {
+    console.error('ERROR:', mensaje);
+    // Aquí puedes implementar un sistema de notificaciones más sofisticado
+}
+
+// Función para formatear fecha (utilidad general)
+function formatearFecha(fechaString) {
+    if (!fechaString) return 'No disponible';
+    
+    try {
+        const fecha = new Date(fechaString);
+        return fecha.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        return fechaString;
+    }
+}

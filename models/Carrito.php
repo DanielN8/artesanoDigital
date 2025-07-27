@@ -398,4 +398,42 @@ class Carrito
             return ['valido' => false, 'errores' => ['Error interno del servidor']];
         }
     }
+
+    /**
+     * Obtiene el resumen total del carrito (cantidad y monto)
+     * @param int $idUsuario
+     * @return array [cantidad => int, total => float]
+     */
+    public function obtenerResumen(int $idUsuario): array 
+    {
+        try {
+            $sql = "SELECT 
+                        COUNT(cp.id_producto) as cantidad_productos,
+                        SUM(cp.cantidad) as cantidad_items,
+                        SUM(cp.cantidad * p.precio) as total
+                    FROM carrito_productos cp
+                    INNER JOIN carritos c ON cp.id_carrito = c.id_carrito
+                    INNER JOIN productos p ON cp.id_producto = p.id_producto
+                    WHERE c.id_usuario = :id_usuario AND p.activo = 1";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute(['id_usuario' => $idUsuario]);
+
+            $resultado = $stmt->fetch();
+
+            return [
+                'cantidad_productos' => (int)($resultado['cantidad_productos'] ?? 0),
+                'cantidad_items' => (int)($resultado['cantidad_items'] ?? 0),
+                'total' => (float)($resultado['total'] ?? 0.0)
+            ];
+
+        } catch (Exception $e) {
+            error_log("Error al obtener resumen del carrito: " . $e->getMessage());
+            return [
+                'cantidad_productos' => 0,
+                'cantidad_items' => 0,
+                'total' => 0.0
+            ];
+        }
+    }
 }

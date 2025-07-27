@@ -82,6 +82,25 @@ if (empty($uri)) {
     $uri = '/';
 }
 
+// Manejar rutas dinámicas antes del switch
+// Ruta para ver detalles de pedido del cliente
+if (preg_match('/^\/cliente\/pedido\/(\d+)$/', $uri, $matches)) {
+    require_once 'controllers/ControladorCliente.php';
+    $controlador = new Controllers\ControladorCliente();
+    $idPedido = $matches[1];
+    $controlador->verDetallePedido($idPedido);
+    exit;
+}
+
+// Ruta para cancelar pedido del cliente
+if (preg_match('/^\/cliente\/pedido\/cancelar\/(\d+)$/', $uri, $matches)) {
+    require_once 'controllers/ControladorCliente.php';
+    $controlador = new Controllers\ControladorCliente();
+    $idPedido = $matches[1];
+    $controlador->cancelarPedido($idPedido);
+    exit;
+}
+
 // Router completo
 switch ($uri) {
     case '/':
@@ -264,9 +283,35 @@ switch ($uri) {
         break;
         
     case '/api/notificaciones':
-        require_once 'controllers/ControladorAPI.php';
-        $controlador = new Controllers\ControladorAPI();
-        $controlador->obtenerNotificaciones();
+        require_once 'controllers/ControladorNotificaciones.php';
+        $controlador = new Controllers\ControladorNotificaciones();
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $controlador->obtenerNotificaciones();
+        }
+        break;
+        
+    case '/api/notificaciones/marcar-leida':
+        require_once 'controllers/ControladorNotificaciones.php';
+        $controlador = new Controllers\ControladorNotificaciones();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controlador->marcarComoLeida();
+        }
+        break;
+        
+    case '/api/notificaciones/marcar-todas-leidas':
+        require_once 'controllers/ControladorNotificaciones.php';
+        $controlador = new Controllers\ControladorNotificaciones();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controlador->marcarTodasComoLeidas();
+        }
+        break;
+        
+    case '/api/notificaciones/contador':
+        require_once 'controllers/ControladorNotificaciones.php';
+        $controlador = new Controllers\ControladorNotificaciones();
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $controlador->obtenerContadorNoLeidas();
+        }
         break;
         
     case '/api/pedidos/{id}/detalles':
@@ -304,10 +349,25 @@ switch ($uri) {
         break;
         
     case '/dashboard/cliente':
+    case '/cliente/dashboard':
         // Verificar autenticación
         require_once 'controllers/ControladorCliente.php';
         $controlador = new Controllers\ControladorCliente();
         $controlador->mostrarDashboard();
+        break;
+    
+    case '/cliente/pedidos':
+        // Mostrar todos los pedidos del cliente
+        require_once 'controllers/ControladorCliente.php';
+        $controlador = new Controllers\ControladorCliente();
+        $controlador->mostrarTodosPedidos();
+        break;
+    
+    case '/perfil':
+        // Perfil de usuario
+        require_once 'controllers/ControladorPerfil.php';
+        $controlador = new Controllers\ControladorPerfil();
+        $controlador->mostrarPerfil();
         break;
     
     case '/artesano/tienda':
@@ -322,6 +382,25 @@ switch ($uri) {
         require_once 'controllers/ControladorProductosArtesano.php';
         $controlador = new ControladorProductosArtesano();
         $controlador->procesarSolicitud();
+        break;
+        
+    case '/artesano/productos/actualizar':
+        // Actualizar producto existente como artesano
+        require_once 'controllers/ControladorProductosArtesano.php';
+        $controlador = new ControladorProductosArtesano();
+        $controlador->procesarSolicitud();
+        break;
+        
+    case '/artesano/productos/eliminar':
+        // Eliminar producto como artesano
+        require_once 'controllers/ControladorProductosArtesano.php';
+        $controlador = new ControladorProductosArtesano();
+        $controlador->procesarSolicitud();
+        break;
+        
+    case '/artesano/detalle-productos':
+        // Mostrar página de detalle y edición de producto para artesanos
+        include 'views/artesano/detalle_productos.php';
         break;
         
     case '/artesano/tienda/procesar':

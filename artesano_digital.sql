@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 20, 2025 at 04:50 AM
+-- Generation Time: Jul 26, 2025 at 08:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -88,7 +88,54 @@ INSERT INTO `notificaciones` (`id_notificacion`, `id_usuario`, `tipo`, `mensaje`
 (1, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #1 por $102.00', 0, '2025-07-17 10:43:51'),
 (2, 2, 'nuevo_pedido', 'Tienes un nuevo pedido #2 por $57.00', 0, '2025-07-17 10:43:51'),
 (3, 4, 'estado_actualizado', 'Tu pedido #1 ha sido enviado', 0, '2025-07-17 10:43:51'),
-(4, 1, 'stock_bajo', 'El producto \"Sombrero Pintao\" tiene stock bajo (8 unidades)', 0, '2025-07-17 10:43:51');
+(4, 1, 'stock_bajo', 'El producto \"Sombrero Pintao\" tiene stock bajo (8 unidades)', 0, '2025-07-17 10:43:51'),
+(5, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #5 por B/. 80.00', 0, '2025-07-20 14:48:43'),
+(6, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #6 por B/. 80.00', 0, '2025-07-20 14:50:36'),
+(7, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #7 por B/. 80.00', 0, '2025-07-20 15:44:07'),
+(8, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #8 por B/. 38.00', 0, '2025-07-23 21:00:42'),
+(9, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #8 por B/. 11.00', 0, '2025-07-23 21:00:42'),
+(10, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #8 por B/. 83.00', 0, '2025-07-23 21:00:42'),
+(11, 2, 'nuevo_pedido', 'Tienes un nuevo pedido #8 por B/. 19.50', 0, '2025-07-23 21:00:42'),
+(12, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #9 por B/. 83.00', 0, '2025-07-23 21:29:12'),
+(13, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #10 por B/. 38.00', 0, '2025-07-23 22:06:00'),
+(14, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #10 por B/. 11.00', 0, '2025-07-23 22:06:00'),
+(15, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #10 por B/. 83.00', 0, '2025-07-23 22:06:00'),
+(16, 2, 'nuevo_pedido', 'Tienes un nuevo pedido #10 por B/. 19.50', 0, '2025-07-23 22:06:00'),
+(17, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #11 por B/. 11.00', 0, '2025-07-23 22:11:21'),
+(18, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #11 por B/. 83.00', 0, '2025-07-23 22:11:21'),
+(19, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #11 por B/. 55.00', 0, '2025-07-23 22:11:21'),
+(20, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #12 por B/. 11.00', 0, '2025-07-23 22:23:21'),
+(21, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #12 por B/. 83.00', 0, '2025-07-23 22:23:21'),
+(22, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #12 por B/. 55.00', 0, '2025-07-23 22:23:21'),
+(23, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #13 por B/. 11.00', 0, '2025-07-23 23:20:38'),
+(24, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #13 por B/. 55.00', 0, '2025-07-23 23:20:38'),
+(25, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #14 por B/. 11.00', 0, '2025-07-23 23:28:52'),
+(26, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #14 por B/. 55.00', 0, '2025-07-23 23:28:52'),
+(27, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #14 por B/. 79.00', 0, '2025-07-23 23:28:52'),
+(28, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #15 por B/. 11.00', 0, '2025-07-23 23:37:41'),
+(29, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #15 por B/. 55.00', 0, '2025-07-23 23:37:41'),
+(30, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #15 por B/. 79.00', 0, '2025-07-23 23:37:41'),
+(31, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #16 por B/. 11.00', 0, '2025-07-25 16:52:27'),
+(32, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #16 por B/. 55.00', 0, '2025-07-25 16:52:27'),
+(33, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #16 por B/. 79.00', 0, '2025-07-25 16:52:27'),
+(34, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #17 por B/. 11.00', 0, '2025-07-25 18:14:52'),
+(35, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #17 por B/. 55.00', 0, '2025-07-25 18:14:52'),
+(36, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #17 por B/. 79.00', 0, '2025-07-25 18:14:52'),
+(37, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #18 por B/. 11.00', 0, '2025-07-25 18:34:57'),
+(38, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #18 por B/. 55.00', 0, '2025-07-25 18:34:57'),
+(39, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #18 por B/. 79.00', 0, '2025-07-25 18:34:57'),
+(40, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #22 por B/. 11.00', 0, '2025-07-25 20:01:48'),
+(41, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #22 por B/. 55.00', 0, '2025-07-25 20:01:48'),
+(42, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #22 por B/. 79.00', 0, '2025-07-25 20:01:48'),
+(43, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #23 por B/. 79.00', 0, '2025-07-25 20:36:20'),
+(44, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #23 por B/. 75.50', 0, '2025-07-25 20:36:20'),
+(45, 3, 'nuevo_pedido', 'Tienes un nuevo pedido #23 por B/. 93.00', 0, '2025-07-25 20:36:20'),
+(46, 2, 'nuevo_pedido', 'Tienes un nuevo pedido #23 por B/. 43.50', 0, '2025-07-25 20:36:20'),
+(47, 1, 'nuevo_pedido', 'Tienes un nuevo pedido #24 por B/. 33.00', 0, '2025-07-25 20:52:36'),
+(48, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #25 por B/. 281.00', 0, '2025-07-25 22:49:37'),
+(49, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #26 por B/. 281.00', 0, '2025-07-25 23:55:05'),
+(50, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #27 por B/. 281.00', 0, '2025-07-26 00:15:55'),
+(51, 7, 'nuevo_pedido', 'Tienes un nuevo pedido #28 por B/. 281.00', 0, '2025-07-26 00:21:19');
 
 -- --------------------------------------------------------
 
@@ -99,22 +146,76 @@ INSERT INTO `notificaciones` (`id_notificacion`, `id_usuario`, `tipo`, `mensaje`
 CREATE TABLE `pedidos` (
   `id_pedido` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `estado` enum('pendiente','enviado','entregado','cancelado') DEFAULT 'pendiente',
+  `estado` enum('pendiente','confirmado','en_proceso','enviado','entregado','cancelado') DEFAULT 'pendiente',
   `metodo_pago` varchar(50) NOT NULL,
   `total` decimal(10,2) NOT NULL,
+  `subtotal` decimal(10,2) DEFAULT NULL,
   `descuento` decimal(10,2) DEFAULT 0.00,
   `fecha_pedido` datetime DEFAULT current_timestamp(),
-  `direccion_envio` text NOT NULL
+  `fecha_confirmacion` datetime DEFAULT NULL,
+  `fecha_proceso` datetime DEFAULT NULL,
+  `fecha_envio` datetime DEFAULT NULL,
+  `fecha_entrega` datetime DEFAULT NULL,
+  `direccion_envio` text NOT NULL,
+  `metodo_envio` varchar(100) DEFAULT 'Env├¡o est├índar',
+  `codigo_seguimiento` varchar(100) DEFAULT NULL,
+  `tiempo_estimado` varchar(50) DEFAULT '3-5 d├¡as h├íbiles',
+  `empresa_envio` varchar(100) DEFAULT NULL,
+  `numero_seguimiento` varchar(100) DEFAULT NULL,
+  `fecha_estimada_entrega` date DEFAULT NULL,
+  `notas_entrega` text DEFAULT NULL,
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pedidos`
 --
 
-INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `estado`, `metodo_pago`, `total`, `descuento`, `fecha_pedido`, `direccion_envio`) VALUES
-(1, 4, 'enviado', 'tarjeta_credito', 102.00, 0.00, '2025-07-17 10:43:51', 'Calle 50, Ciudad de Panamá'),
-(2, 5, 'pendiente', 'yappy', 57.00, 0.00, '2025-07-17 10:43:51', 'Vía España, San Miguelito'),
-(3, 6, 'pendiente', 'yappy', 0.00, 0.00, '2025-07-17 11:42:40', '{\"nombre\":\"Daniel\",\"direccion\":\"dasdasd\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}');
+INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `estado`, `metodo_pago`, `total`, `subtotal`, `descuento`, `fecha_pedido`, `fecha_confirmacion`, `fecha_proceso`, `fecha_envio`, `fecha_entrega`, `direccion_envio`, `metodo_envio`, `codigo_seguimiento`, `tiempo_estimado`, `empresa_envio`, `numero_seguimiento`, `fecha_estimada_entrega`, `notas_entrega`, `fecha_actualizacion`) VALUES
+(1, 4, 'enviado', 'tarjeta_credito', 227.00, 227.00, 0.00, '2025-07-17 10:43:51', '2025-07-17 11:43:51', '2025-07-18 10:43:51', '2025-07-19 10:43:51', NULL, 'Calle 50, Ciudad de Panamá', 'Env├¡o express', 'TR00000001', '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(2, 5, 'pendiente', 'yappy', 102.00, 102.00, 0.00, '2025-07-17 10:43:51', NULL, NULL, NULL, NULL, 'Vía España, San Miguelito', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(19, 4, 'pendiente', 'tarjeta', 90.00, 90.00, 0.00, '2025-07-25 19:26:35', NULL, NULL, NULL, NULL, 'Calle 50, Edificio Plaza, Apto 15B, Ciudad de Panamß', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', 'DHL Panamß', NULL, NULL, 'Cliente solicita entrega en horario de oficina', '2025-07-26 17:13:51'),
+(20, 5, 'en_proceso', 'yappy', 47.00, 47.00, 0.00, '2025-07-25 19:26:35', NULL, NULL, NULL, NULL, 'Av. Balboa, Torre Ocean, Piso 8, Oficina 802', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', 'Correos de Panamß', 'CP123456789', '2025-07-30', 'Producto personalizado seg·n especificaciones', '2025-07-26 17:13:51'),
+(21, 6, '', 'efectivo', 50.00, 50.00, 0.00, '2025-07-25 19:26:35', NULL, NULL, NULL, NULL, 'Calle Principal, Casa 123, Las Cumbres', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', 'Mailboxes Etc.', 'MBE987654321', '2025-07-28', 'Entrega en fin de semana disponible', '2025-07-26 17:13:51'),
+(22, 6, 'en_proceso', 'tarjeta', 145.00, 145.00, 0.00, '2025-07-25 20:01:48', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"adasdas\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(23, 6, 'entregado', 'tarjeta', 291.00, 291.00, 0.00, '2025-07-25 20:36:20', '2025-07-25 21:36:20', '2025-07-26 20:36:20', '2025-07-27 20:36:20', '2025-07-29 20:36:20', '{\"nombre\":\"Daniel\",\"direccion\":\"adasdas\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o express', 'TR00000023', '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(24, 7, 'pendiente', 'yappy', 33.00, 33.00, 0.00, '2025-07-25 20:52:36', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(25, 6, 'en_proceso', 'tarjeta', 281.00, 281.00, 0.00, '2025-07-25 22:49:37', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"sadasdas\",\"ciudad\":\"Chame\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(26, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-25 23:55:05', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-1234\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(27, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:15:55', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
+(28, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:21:19', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasds\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pedido_eventos`
+--
+
+CREATE TABLE `pedido_eventos` (
+  `id_evento` int(11) NOT NULL,
+  `id_pedido` int(11) NOT NULL,
+  `tipo` enum('estado_cambio','envio','comunicacion','problema','nota') NOT NULL,
+  `descripcion` text NOT NULL,
+  `fecha_evento` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id_usuario` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pedido_eventos`
+--
+
+INSERT INTO `pedido_eventos` (`id_evento`, `id_pedido`, `tipo`, `descripcion`, `fecha_evento`, `id_usuario`) VALUES
+(1, 1, 'estado_cambio', 'Pedido recibido y en procesamiento', '2025-07-26 00:27:34', 1),
+(2, 2, 'estado_cambio', 'Pedido en preparaci¾n - productos en fabricaci¾n', '2025-07-26 00:27:34', 1),
+(3, 2, 'envio', 'Paquete preparado para envÝo', '2025-07-26 00:27:34', 1),
+(7, 1, 'estado_cambio', 'Pedido confirmado y enviado al cliente', '2025-07-26 00:30:06', 1),
+(8, 1, 'envio', 'Paquete entregado a empresa de envÝo', '2025-07-26 00:30:06', 1),
+(9, 2, 'estado_cambio', 'Pedido recibido - preparando productos', '2025-07-26 00:30:06', 1),
+(11, 22, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-26 01:34:30', 7),
+(12, 23, 'estado_cambio', 'Estado cambiado a: entregado', '2025-07-26 01:37:01', 7),
+(13, 23, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-26 01:37:21', 7),
+(14, 25, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-26 03:50:00', 7),
+(15, 23, 'estado_cambio', 'Estado cambiado a: entregado', '2025-07-26 03:57:36', 7);
 
 -- --------------------------------------------------------
 
@@ -139,7 +240,38 @@ INSERT INTO `pedido_productos` (`id_pedido_producto`, `id_pedido`, `id_producto`
 (1, 1, 1, 2, 45.00, 0.00),
 (2, 1, 3, 1, 12.00, 0.00),
 (3, 2, 2, 1, 35.00, 0.00),
-(4, 2, 4, 1, 22.00, 0.00);
+(4, 2, 4, 1, 22.00, 0.00),
+(46, 1, 2, 1, 35.00, 0.00),
+(47, 2, 1, 1, 45.00, 0.00),
+(59, 19, 1, 2, 45.00, 0.00),
+(60, 20, 2, 1, 35.00, 0.00),
+(61, 20, 3, 1, 12.00, 0.00),
+(62, 21, 4, 1, 28.00, 0.00),
+(63, 21, 5, 1, 22.00, 0.00),
+(64, 22, 3, 1, 11.00, 0.00),
+(65, 22, 6, 1, 55.00, 0.00),
+(66, 22, 8, 1, 79.00, 0.00),
+(67, 23, 8, 1, 79.00, 0.00),
+(68, 23, 1, 1, 33.00, 0.00),
+(69, 23, 2, 1, 31.50, 0.00),
+(70, 23, 3, 1, 11.00, 0.00),
+(71, 23, 7, 1, 38.00, 0.00),
+(72, 23, 6, 1, 55.00, 0.00),
+(73, 23, 5, 1, 19.50, 0.00),
+(74, 23, 4, 1, 24.00, 0.00),
+(75, 24, 1, 1, 33.00, 0.00),
+(76, 25, 11, 1, 221.00, 0.00),
+(77, 25, 10, 1, 10.00, 0.00),
+(78, 25, 9, 1, 50.00, 0.00),
+(79, 26, 11, 1, 221.00, 0.00),
+(80, 26, 10, 1, 10.00, 0.00),
+(81, 26, 9, 1, 50.00, 0.00),
+(82, 27, 11, 1, 221.00, 0.00),
+(83, 27, 10, 1, 10.00, 0.00),
+(84, 27, 9, 1, 50.00, 0.00),
+(85, 28, 11, 1, 221.00, 0.00),
+(86, 28, 10, 1, 10.00, 0.00),
+(87, 28, 9, 1, 50.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -165,13 +297,18 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `id_tienda`, `nombre`, `descripcion`, `precio`, `descuento`, `imagen`, `stock`, `activo`, `fecha_creacion`) VALUES
-(1, 1, 'Mola Tradicional', 'Mola auténtica hecha por artesanas gunas con diseños tradicionales', 45.00, 12.00, 'productos/mola1.jpg', 15, 1, '2025-07-17 10:43:51'),
-(2, 1, 'Sombrero Pintao', 'Sombrero pintao tejido a mano con fibras naturales', 35.00, 3.50, 'productos/sombrero1.jpg', 8, 1, '2025-07-17 10:43:51'),
-(3, 1, 'Pulsera de Tagua', 'Pulsera elaborada con semillas de tagua, diseño único', 12.00, 1.00, 'productos/pulsera1.jpg', 25, 1, '2025-07-17 10:43:51'),
-(4, 2, 'Vasija de Barro', 'Vasija decorativa de barro cocido con motivos precolombinos', 28.00, 4.00, 'productos/vasija1.jpg', 12, 1, '2025-07-17 10:43:51'),
-(5, 2, 'Plato Decorativo', 'Plato de cerámica pintado a mano con diseños florales', 22.00, 2.50, 'productos/plato1.jpg', 18, 1, '2025-07-17 10:43:51'),
-(6, 3, 'Huipil Bordado', 'Huipil tradicional con bordados coloridos hechos a mano', 65.00, 10.00, 'productos/huipil1.jpg', 6, 1, '2025-07-17 10:43:51'),
-(7, 3, 'Bolso Tejido', 'Bolso artesanal tejido con fibras naturales y diseños étnicos', 38.00, 0.00, 'productos/bolso1.jpg', 10, 1, '2025-07-17 10:43:51');
+(1, 1, 'Mola Tradicional', 'Mola auténtica hecha por artesanas gunas con diseños tradicionales', 45.00, 12.00, 'productos/mola1.jpg', 10, 1, '2025-07-17 10:43:51'),
+(2, 1, 'Sombrero Pintao', 'Sombrero pintao tejido a mano con fibras naturales', 35.00, 3.50, 'productos/sombrero1.jpg', 4, 1, '2025-07-17 10:43:51'),
+(3, 1, 'Pulsera de Tagua', 'Pulsera elaborada con semillas de tagua, diseño único', 12.00, 1.00, 'productos/pulsera1.jpg', 13, 1, '2025-07-17 10:43:51'),
+(4, 2, 'Vasija de Barro', 'Vasija decorativa de barro cocido con motivos precolombinos', 28.00, 4.00, 'productos/vasija1.jpg', 11, 1, '2025-07-17 10:43:51'),
+(5, 2, 'Plato Decorativo', 'Plato de cerámica pintado a mano con diseños florales', 22.00, 2.50, 'productos/plato1.jpg', 15, 1, '2025-07-17 10:43:51'),
+(6, 3, 'Huipil Bordado', 'Huipil tradicional con bordados coloridos hechos a mano', 65.00, 10.00, 'productos/huipil1.jpg', -4, 1, '2025-07-17 10:43:51'),
+(7, 3, 'Bolso Tejido', 'Bolso artesanal tejido con fibras naturales y diseños étnicos', 38.00, 0.00, 'productos/bolso1.jpg', 7, 1, '2025-07-17 10:43:51'),
+(8, 4, 'TESTk', 'k', 89.00, 10.00, 'public/productos/prod_687d53cc28804_472775.jpg', 77, 1, '2025-07-20 15:38:36'),
+(9, 4, 'test2', 'no se', 100.00, 50.00, 'public/productos/prod_688431978e85f_test-image.jpg', 46, 1, '2025-07-25 20:38:31'),
+(10, 4, 'Daniel', 'asd', 12.00, 2.00, 'public/productos/prod_688435e006900_test-image.jpg', -2, 1, '2025-07-25 20:56:48'),
+(11, 4, 'asdasdasd', 'das', 223.00, 2.00, 'public/productos/prod_68843a3841062_test-image.jpg', 19, 1, '2025-07-25 21:15:20'),
+(12, 4, 'qwe', 'asd', 123.00, 3.00, 'public/productos/prod_688506510261d_test-image.jpg', 222, 1, '2025-07-26 11:46:09');
 
 -- --------------------------------------------------------
 
@@ -225,7 +362,8 @@ CREATE TABLE `tiendas` (
 INSERT INTO `tiendas` (`id_tienda`, `id_usuario`, `nombre_tienda`, `descripcion`, `imagen_logo`, `fecha_creacion`) VALUES
 (1, 1, 'Artesanías María', 'Hermosas artesanías tradicionales panameñas hechas a mano', 'logos/maria_logo.jpg', '2025-07-17 10:43:51'),
 (2, 2, 'Cerámica Carlos', 'Cerámica artesanal de alta calidad inspirada en tradiciones locales', 'logos/carlos_logo.jpg', '2025-07-17 10:43:51'),
-(3, 3, 'Textiles Ana', 'Textiles únicos con diseños autóctonos de Panamá', 'logos/ana_logo.jpg', '2025-07-17 10:43:51');
+(3, 3, 'Textiles Ana', 'Textiles únicos con diseños autóctonos de Panamá', 'logos/ana_logo.jpg', '2025-07-17 10:43:51'),
+(4, 7, 'Tienda de Daniel', 'Los mejores productos que puedes encontrar', 'logos/tienda_687c6554a693e.jpg', '2025-07-19 22:41:08');
 
 -- --------------------------------------------------------
 
@@ -297,6 +435,15 @@ ALTER TABLE `pedidos`
   ADD KEY `idx_fecha` (`fecha_pedido`);
 
 --
+-- Indexes for table `pedido_eventos`
+--
+ALTER TABLE `pedido_eventos`
+  ADD PRIMARY KEY (`id_evento`),
+  ADD KEY `idx_pedido` (`id_pedido`),
+  ADD KEY `idx_fecha` (`fecha_evento`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
 -- Indexes for table `pedido_productos`
 --
 ALTER TABLE `pedido_productos`
@@ -365,25 +512,31 @@ ALTER TABLE `carrito_productos`
 -- AUTO_INCREMENT for table `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
+-- AUTO_INCREMENT for table `pedido_eventos`
+--
+ALTER TABLE `pedido_eventos`
+  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `pedido_productos`
 --
 ALTER TABLE `pedido_productos`
-  MODIFY `id_pedido_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pedido_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT for table `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `recuperaciones_contrasena`
@@ -395,7 +548,7 @@ ALTER TABLE `recuperaciones_contrasena`
 -- AUTO_INCREMENT for table `tiendas`
 --
 ALTER TABLE `tiendas`
-  MODIFY `id_tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
@@ -431,6 +584,13 @@ ALTER TABLE `notificaciones`
 --
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `pedido_eventos`
+--
+ALTER TABLE `pedido_eventos`
+  ADD CONSTRAINT `pedido_eventos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id_pedido`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_eventos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `pedido_productos`

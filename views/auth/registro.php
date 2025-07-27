@@ -6,6 +6,7 @@ $descripcion = 'Crea tu cuenta en Artesano Digital';
 // Iniciar captura de contenido
 ob_start(); 
 ?>
+<link rel="stylesheet" href="/artesanoDigital/assets/css/auth.css">
 
 <div class="auth-container">
     <div class="auth-card">

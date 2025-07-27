@@ -1,0 +1,468 @@
+  /* Reset muy ligero */
+  body { margin:0; background:#faf8f5; color:#333; font-family:'Inter', sans-serif; }
+  .contenedor { max-width:1280px; margin:0 auto; padding:0 1rem; }
+  .seccion { padding:3rem 0; }
+  .seccion-titulo { text-align:center; font-size:2rem; margin-bottom:2rem; }
+
+  /* Hero full-width */
+  .hero {
+    width:100%;
+    background: linear-gradient(135deg, #357ab8, #4a90e2);
+    color: #fff;
+    text-align: center;
+    padding: 5rem 1rem;
+  }
+  .hero-contenido { max-width:800px; margin:0 auto; }
+  .hero-titulo    { font-size:3rem; margin-bottom:.5rem; }
+  .hero-subtitulo { font-size:2rem; margin-bottom:1rem; opacity:.9; }
+  .hero-descripcion {
+    font-size:1.1rem; line-height:1.5; margin-bottom:2rem;
+  }
+  .hero-acciones { 
+    display:flex;
+    gap:1rem;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* Botones - Estilo minimalista */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+  }
+  
+  .btn-primary {
+    background: #8b4513;
+    color: #fff;
+    border-color: #8b4513;
+  }
+  
+  .btn-primary:hover {
+    background: #654321;
+    border-color: #654321;
+  }
+  
+  .btn-outline {
+    background: transparent;
+    color: #8b4513;
+    border-color: #8b4513;
+  }
+  
+  .btn-outline:hover {
+    background: #8b4513;
+    color: #fff;
+  }
+  
+  .btn-secundario {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+  
+  .btn-secundario:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  
+  .btn-primario {
+    background: #fff;
+    color: #357ab8;
+    border-color: #fff;
+  }
+  
+  .btn-primario:hover {
+    background: #f8f9fa;
+  }
+
+  /* Categorías grid */
+  .categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Estilos para categorías */
+  .categoria-imagen-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .categoria-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease, background 0.3s ease;
+  }
+  
+  .categoria-tarjeta:hover .categoria-imagen {
+    transform: scale(1.05);
+  }
+  
+  .categoria-tarjeta:hover .categoria-overlay {
+    opacity: 1;
+    background: rgba(0,0,0,0.3);
+  }
+  
+  .btn-categoria {
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #357ab8;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .btn-categoria:hover {
+    transform: scale(1.1);
+    background: #357ab8;
+    color: white;
+  }
+  
+  .categoria-info {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .categoria-info h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .categoria-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  /* Productos grid 4 columnas - Diseño mejorado */
+  .productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .categoria-tarjeta,
+  .producto-tarjeta {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+    position: relative;
+    border: 1px solid #e5e7eb;
+    height: 100%;
+  }
+  
+  .producto-tarjeta:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #8b4513;
+  }
+  
+  /* Badge de descuento mejorado */
+  .badge-descuento {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 12px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  /* Contenedor de imagen mejorado */
+  .producto-imagen-container {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  }
+  
+  .categoria-imagen,
+  .producto-imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .producto-tarjeta:hover .producto-imagen {
+    transform: scale(1.05);
+  }
+  
+  /* Información del producto mejorada */
+  .producto-info {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .producto-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    height: auto;
+    overflow: visible;
+    text-overflow: unset;
+    display: block;
+  }
+  
+  /* Precios mejorados */
+  .producto-precios {
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .precio-original {
+    text-decoration: line-through;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .precio-descuento {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ef4444;
+    margin: 0;
+  }
+  
+  .producto-precio {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #8b4513;
+    margin: 0;
+  }
+  
+  /* Información del artesano mejorada */
+  .producto-artesano {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .producto-artesano::before {
+    content: "👨‍🎨";
+    font-size: 0.9rem;
+  }
+  
+  /* Botón de carrito mejorado */
+  .producto-acciones {
+    margin-top: auto;
+    padding: 0;
+  }
+  
+  .btn-carrito-bottom {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #8b4513, #654321);
+    color: white;
+    border: none;
+    border-radius: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  
+  .btn-carrito-bottom:hover {
+    background: linear-gradient(135deg, #654321, #4a2c13);
+    color: white;
+    transform: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .btn-carrito-bottom:active {
+    transform: scale(0.98);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .btn-carrito-bottom i {
+    font-size: 1rem;
+  }
+
+  .seccion-accion { text-align:center; margin-top:2rem; }
+
+  /* Sobre Nosotros - Diseño Minimalista */
+  .sobre-titulo {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .sobre-subtitulo {
+    text-align: center;
+    color: #666;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+  .highlight {
+    color: #357ab8;
+  }
+  .sobre-contenido {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 1100px;
+  }
+  .sobre-texto { 
+    flex: 1 1 400px;
+    line-height: 1.6;
+  }
+  .sobre-parrafo {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  .beneficios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+  .beneficio-item {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .beneficio-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  }
+  .beneficio-icono {
+    color: #357ab8;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .beneficio-texto {
+    font-weight: 500;
+  }
+  .sobre-imagen {
+    flex: 0 1 450px;
+  }
+  .imagen-elevada {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 16px 32px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  .imagen-elevada:hover {
+    transform: scale(1.02);
+  }
+
+  /* Responsive */
+  @media (min-width: 1200px) {
+    .productos-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .categorias-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .productos-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .categorias-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 576px) and (max-width: 767px) {
+    .productos-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .categorias-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-titulo { font-size: 2.5rem; }
+    .hero-subtitulo { font-size: 1.8rem; }
+  }
+  
+  @media (max-width: 575px) {
+    .productos-grid {
+      grid-template-columns: 1fr;
+    }
+    .categorias-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-titulo { font-size: 2rem; }
+    .hero-subtitulo { font-size: 1.5rem; }
+    .sobre-contenido { flex-direction: column; }
+    .hero { padding: 3rem 1rem; }
+  }
+  
+  /* Animaciones para elementos */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .producto-tarjeta, .categoria-tarjeta {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .producto-tarjeta:nth-child(1), .categoria-tarjeta:nth-child(1) { animation-delay: 0.1s; }
+  .producto-tarjeta:nth-child(2), .categoria-tarjeta:nth-child(2) { animation-delay: 0.2s; }
+  .producto-tarjeta:nth-child(3), .categoria-tarjeta:nth-child(3) { animation-delay: 0.3s; }
+  .producto-tarjeta:nth-child(4), .categoria-tarjeta:nth-child(4) { animation-delay: 0.4s; }
+  .producto-tarjeta:nth-child(5) { animation-delay: 0.5s; }
+  .producto-tarjeta:nth-child(6) { animation-delay: 0.6s; }
+  .producto-tarjeta:nth-child(7) { animation-delay: 0.7s; }
+  .producto-tarjeta:nth-child(8) { animation-delay: 0.8s; }

@@ -332,21 +332,21 @@ class ControladorArtesano
         ];
         
         try {
-            // Obtener ID de la tienda del artesano
-            require_once dirname(__FILE__) . '/../config/Database.php';
-            $db = \Config\Database::obtenerInstancia();
-            $conexion = $db->obtenerConexion();
+            // Usar la conexión ya establecida en el constructor
+            $conexion = $this->conexion;
             
             // 1. Obtener ID de la tienda
             $stmt = $conexion->prepare("SELECT id_tienda FROM tiendas WHERE id_usuario = ?");
             $stmt->execute([$idUsuario]);
-            $tienda = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $tienda = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if (!$tienda) {
+                error_log("Artesano ID {$idUsuario} no tiene tienda registrada");
                 return $estadisticas; // Artesano sin tienda
             }
             
             $idTienda = $tienda['id_tienda'];
+            error_log("Obteniendo estadísticas para tienda ID: {$idTienda} del usuario: {$idUsuario}");
             
             // 2. Contar productos activos
             $stmt = $conexion->prepare("SELECT COUNT(*) as total FROM productos WHERE id_tienda = ? AND activo = 1");
@@ -403,22 +403,36 @@ class ControladorArtesano
             $idTienda = $resultado ? $resultado['id_tienda'] : 0;
             
             if (!$idTienda) {
+                error_log("Usuario {$idUsuario} no tiene tienda para obtener pedidos recibidos");
                 return [];
             }
             
+            error_log("Obteniendo pedidos recibidos para tienda ID: {$idTienda}");
+            
             // Ahora obtenemos los pedidos que contengan productos de esa tienda
+            // Calculamos solo el total de los productos de este artesano en cada pedido
             $stmt = $this->conexion->prepare("
-                SELECT DISTINCT p.id_pedido, p.fecha_pedido, p.total, p.estado, u.nombre as cliente_nombre
+                SELECT 
+                    p.id_pedido, 
+                    p.fecha_pedido, 
+                    SUM(pp.cantidad * pp.precio_unitario) as total, 
+                    p.estado, 
+                    u.nombre as cliente_nombre,
+                    u.correo as cliente_correo
                 FROM pedidos p
                 JOIN pedido_productos pp ON p.id_pedido = pp.id_pedido
                 JOIN productos prod ON pp.id_producto = prod.id_producto
                 JOIN usuarios u ON p.id_usuario = u.id_usuario
                 WHERE prod.id_tienda = ?
+                GROUP BY p.id_pedido, p.fecha_pedido, p.estado, u.nombre, u.correo
                 ORDER BY p.fecha_pedido DESC
-                LIMIT 5
+                LIMIT 10
             ");
             $stmt->execute([$idTienda]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("Encontrados " . count($pedidos) . " pedidos recibidos para la tienda {$idTienda}");
+            return $pedidos;
             
         } catch (\Exception $e) {
             error_log("Error al obtener pedidos recibidos: " . $e->getMessage());
@@ -434,15 +448,20 @@ class ControladorArtesano
     private function obtenerPedidosPersonales(int $idUsuario): array 
     {
         try {
+            error_log("Obteniendo pedidos personales para usuario ID: {$idUsuario}");
+            
             $stmt = $this->conexion->prepare("
                 SELECT id_pedido, fecha_pedido, total, estado, metodo_pago
                 FROM pedidos 
                 WHERE id_usuario = ?
                 ORDER BY fecha_pedido DESC
-                LIMIT 5
+                LIMIT 10
             ");
             $stmt->execute([$idUsuario]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("Encontrados " . count($pedidos) . " pedidos personales para usuario {$idUsuario}");
+            return $pedidos;
             
         } catch (\Exception $e) {
             error_log("Error al obtener pedidos personales: " . $e->getMessage());
@@ -460,26 +479,38 @@ class ControladorArtesano
         try {
             // Primero obtenemos el ID de la tienda del artesano
             $stmt = $this->conexion->prepare("
-                SELECT id_tienda FROM tiendas WHERE id_usuario = ?
+                SELECT id_tienda, nombre_tienda FROM tiendas WHERE id_usuario = ?
             ");
             $stmt->execute([$idUsuario]);
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
             $idTienda = $resultado ? $resultado['id_tienda'] : 0;
+            $nombreTienda = $resultado ? $resultado['nombre_tienda'] : '';
             
             if (!$idTienda) {
+                error_log("Usuario {$idUsuario} no tiene tienda para obtener productos");
                 return [];
             }
             
+            error_log("Obteniendo productos para tienda ID: {$idTienda}");
+            
             // Ahora obtenemos los productos de esa tienda
             $stmt = $this->conexion->prepare("
-                SELECT p.id_producto, p.nombre, p.precio, p.descripcion, p.stock, p.imagen, p.activo
+                SELECT p.id_producto, p.nombre, p.precio, p.descripcion, p.stock, p.imagen, p.activo, p.descuento
                 FROM productos p
                 WHERE p.id_tienda = ?
                 ORDER BY p.fecha_creacion DESC
-                LIMIT 10
+                LIMIT 20
             ");
             $stmt->execute([$idTienda]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Agregar el nombre de la tienda a cada producto
+            foreach ($productos as &$producto) {
+                $producto['nombre_tienda'] = $nombreTienda;
+            }
+            
+            error_log("Encontrados " . count($productos) . " productos para la tienda {$idTienda}");
+            return $productos;
             
         } catch (\Exception $e) {
             error_log("Error al obtener productos del artesano: " . $e->getMessage());

@@ -1,8 +1,5 @@
 <?php
-/**
- * Clase Database - Patrón Singleton para gestión de conexión a base de datos
- * Responsabilidad: Proporcionar una única instancia de conexión PDO segura
- */
+// Patrón Singleton para la gestión de la conexión a base de datos
 
 namespace Config;
 
@@ -20,9 +17,6 @@ class Database
     private string $contrasena;
     private string $charset;
 
-    /**
-     * Constructor privado para implementar Singleton
-     */
     private function __construct() 
     {
         // Cargar variables de entorno si existe DotEnv
@@ -39,10 +33,6 @@ class Database
         $this->conectar();
     }
 
-    /**
-     * Obtiene la instancia única de Database (Singleton)
-     * @return Database Instancia única
-     */
     public static function obtenerInstancia(): Database 
     {
         if (self::$instancia === null) {
@@ -51,10 +41,6 @@ class Database
         return self::$instancia;
     }
 
-    /**
-     * Establece la conexión PDO con configuración segura
-     * @throws Exception Si falla la conexión
-     */
     private function conectar(): void 
     {
         try {
@@ -74,10 +60,6 @@ class Database
         }
     }
 
-    /**
-     * Obtiene la conexión PDO
-     * @return PDO Conexión activa
-     */
     public function obtenerConexion(): PDO 
     {
         if ($this->conexion === null) {
@@ -86,49 +68,28 @@ class Database
         return $this->conexion;
     }
 
-    /**
-     * Previene la clonación del objeto Singleton
-     */
     private function __clone() {}
 
-    /**
-     * Previene la deserialización del objeto Singleton
-     */
     public function __wakeup() 
     {
         throw new Exception("No se puede deserializar un Singleton");
     }
 
-    /**
-     * Cierra la conexión
-     */
     public function cerrarConexion(): void 
     {
         $this->conexion = null;
     }
 
-    /**
-     * Inicia una transacción
-     * @return bool True si se inició correctamente
-     */
     public function iniciarTransaccion(): bool 
     {
         return $this->conexion->beginTransaction();
     }
 
-    /**
-     * Confirma una transacción
-     * @return bool True si se confirmó correctamente
-     */
     public function confirmarTransaccion(): bool 
     {
         return $this->conexion->commit();
     }
 
-    /**
-     * Revierte una transacción
-     * @return bool True si se revirtió correctamente
-     */
     public function revertirTransaccion(): bool 
     {
         return $this->conexion->rollBack();

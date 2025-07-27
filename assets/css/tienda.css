@@ -59,24 +59,41 @@
     margin-top: 30px;
 }
 
+/* Botones - Estilo minimalista */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
 .btn-primary {
-    background-color: #4e73df;
-    border-color: #4e73df;
+    background-color: #8b4513;
+    color: white;
+    border-color: #8b4513;
 }
 
 .btn-primary:hover {
-    background-color: #2e59d9;
-    border-color: #2653d4;
+    background-color: #654321;
+    border-color: #654321;
 }
 
 .btn-secondary {
-    background-color: #858796;
-    border-color: #858796;
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
 }
 
 .btn-secondary:hover {
-    background-color: #717384;
-    border-color: #6b6d7d;
+    background-color: #5a6268;
+    border-color: #5a6268;
 }
 
 /* Alerta informativa */

@@ -1,16 +1,19 @@
 <?php
 namespace Patrones;
 
-/**
- * Interfaz Producto - Define la interfaz básica para productos
- */
+
+// Interfaz ProductoInterface
+
 interface ProductoInterface {
+
     public function obtenerPrecio(): float;
+
     public function obtenerDetalles(): array;
 }
 
 /**
- * Clase ProductoBase - Implementación concreta del Producto
+ * Clase ProductoBase
+ * Representa un producto básico sin descuentos
  */
 class ProductoBase implements ProductoInterface {
     protected $id;
@@ -156,7 +159,7 @@ class ProductoConDescuentoMonto extends ProductoDecorador {
 }
 
 /**
- * Factoría para crear productos con o sin descuentos
+ * Factory para crear productos con o sin descuentos
  */
 class ProductoFactory {
     public static function crearProducto(array $datos): ProductoInterface {

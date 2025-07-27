@@ -108,6 +108,25 @@ class Pedido
             return [];
         }
     }
+    
+    /**
+     * Obtiene un pedido por su ID
+     * @param int $idPedido
+     * @return array|false
+     */
+    public function obtenerPorId(int $idPedido)
+    {
+        try {
+            $sql = "SELECT * FROM pedidos WHERE id_pedido = :id_pedido";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute(['id_pedido' => $idPedido]);
+            
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error al obtener pedido por ID: " . $e->getMessage());
+            return false;
+        }
+    }
 
     /**
      * Actualiza el estado de un pedido
@@ -141,16 +160,23 @@ class Pedido
     {
         try {
             $sql = "SELECT pp.id_pedido_producto, pp.id_producto, pp.cantidad, pp.precio_unitario,
-                           p.nombre, p.descripcion, p.imagen
+                           p.nombre, p.descripcion, p.imagen,
+                           t.nombre_tienda AS tienda_nombre,
+                           u.nombre AS artesano
                     FROM pedido_productos pp
                     INNER JOIN productos p ON pp.id_producto = p.id_producto
+                    LEFT JOIN tiendas t ON p.id_tienda = t.id_tienda
+                    LEFT JOIN usuarios u ON t.id_usuario = u.id_usuario
                     WHERE pp.id_pedido = :id_pedido
                     ORDER BY pp.id_pedido_producto ASC";
             
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute(['id_pedido' => $idPedido]);
             
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Pedido::obtenerProductosPedido - Productos encontrados para pedido $idPedido: " . count($productos));
+            
+            return $productos;
             
         } catch (Exception $e) {
             error_log("Error al obtener productos del pedido: " . $e->getMessage());

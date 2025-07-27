@@ -93,9 +93,10 @@ class ControladorProductosArtesano
             }
             
             if (!$idTienda) {
+                error_log("El artesano no tiene tienda asociada. Debe crear una tienda primero.");
                 return [
                     'error' => true,
-                    'mensaje' => 'No se encontró una tienda asociada a tu cuenta. Debes crear una tienda primero.'
+                    'mensaje' => 'No se encontró una tienda asociada a tu cuenta. Debes crear una tienda primero usando el botón "Crear mi tienda ahora" en tu dashboard.'
                 ];
             }
             
@@ -157,7 +158,7 @@ class ControladorProductosArtesano
             $precio = floatval($datos['precio']);
             $stock = isset($datos['stock']) ? intval($datos['stock']) : 0;
             $descuento = isset($datos['descuento']) ? floatval($datos['descuento']) : 0;
-            $activo = isset($datos['activo']) ? 1 : 0;
+            $activo = 1; // Los productos nuevos están activos por defecto
             
             // Preparar la consulta SQL para insertar producto
             $sql = "INSERT INTO productos (
@@ -312,8 +313,7 @@ class ControladorProductosArtesano
                 imagen = :imagen, 
                 stock = :stock, 
                 descuento = :descuento, 
-                activo = :activo, 
-                fecha_actualizacion = NOW()
+                activo = :activo
             WHERE id_producto = :id_producto";
             
             $stmt = $this->conexion->prepare($sql);
@@ -419,7 +419,10 @@ class ControladorProductosArtesano
     public function obtenerPorId(int $idProducto) 
     {
         try {
-            $sql = "SELECT * FROM productos WHERE id_producto = :id_producto";
+            $sql = "SELECT p.*, t.nombre as nombre_tienda 
+                    FROM productos p 
+                    LEFT JOIN tiendas t ON p.id_tienda = t.id_tienda 
+                    WHERE p.id_producto = :id_producto";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':id_producto', $idProducto, \PDO::PARAM_INT);
             $stmt->execute();
@@ -436,6 +439,51 @@ class ControladorProductosArtesano
      */
     public function procesarSolicitud() 
     {
+        // Manejar solicitudes GET para obtener datos del producto
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $action = $_GET['action'] ?? '';
+            $id = $_GET['id'] ?? '';
+            
+            if ($action === 'obtener' && !empty($id)) {
+                header('Content-Type: application/json');
+                try {
+                    $producto = $this->obtenerPorId((int)$id);
+                    if ($producto) {
+                        // Verificar que el producto pertenece al artesano actual
+                        $usuario = $this->gestorAuth->obtenerUsuarioActual();
+                        $tienda = $this->modeloTienda->obtenerPorUsuario($usuario['id_usuario']);
+                        
+                        if ($tienda && $producto['id_tienda'] == $tienda['id_tienda']) {
+                            echo json_encode([
+                                'success' => true,
+                                'producto' => $producto
+                            ]);
+                        } else {
+                            echo json_encode([
+                                'success' => false,
+                                'message' => 'No tienes permiso para ver este producto'
+                            ]);
+                        }
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Producto no encontrado'
+                        ]);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Error al obtener el producto: ' . $e->getMessage()
+                    ]);
+                }
+                exit;
+            }
+            
+            // Para otras solicitudes GET, redirigir al dashboard
+            header('Location: /artesanoDigital/artesano/dashboard');
+            exit;
+        }
+        
         // Verificar si es una solicitud POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             error_log("Se accedió a ControladorProductosArtesano sin método POST");
@@ -446,7 +494,11 @@ class ControladorProductosArtesano
         
         // Verificar la acción solicitada
         $accion = $_POST['accion'] ?? '';
-        error_log("Procesando solicitud de acción: $accion");
+        error_log("=== PROCESANDO SOLICITUD ===");
+        error_log("Acción: $accion");
+        error_log("Usuario ID: " . ($this->gestorAuth->obtenerUsuarioActual()['id_usuario'] ?? 'No definido'));
+        error_log("Datos POST: " . json_encode(array_keys($_POST)));
+        error_log("Archivos FILES: " . (isset($_FILES['imagen']) ? $_FILES['imagen']['name'] : 'Ninguno'));
         
         if ($accion === 'crear_producto') {
             try {
@@ -463,56 +515,141 @@ class ControladorProductosArtesano
                 
                 if (!$resultado['error']) {
                     error_log("Producto creado correctamente con ID: " . ($resultado['id_producto'] ?? 'desconocido'));
-                    // Éxito: redirigir a la dashboard con mensaje de éxito
-                    header('Location: /artesanoDigital/artesano/dashboard?mensaje=Producto creado correctamente&tipo=success');
+                    // Guardar mensaje en sesión para mostrar toast
+                    $_SESSION['toast_mensaje'] = 'Producto creado correctamente';
+                    $_SESSION['toast_tipo'] = 'exito';
+                    // Redirigir a dashboard
+                    header('Location: /artesanoDigital/artesano/dashboard');
                     exit;
                 } else {
                     error_log("Error al crear producto: " . ($resultado['mensaje'] ?? 'Error desconocido'));
-                    // Error: redirigir con mensaje de error
-                    header('Location: /artesanoDigital/artesano/dashboard?mensaje=' . urlencode($resultado['mensaje'] ?? 'Error al crear el producto') . '&tipo=error');
+                    // Guardar mensaje de error en sesión para mostrar toast
+                    $_SESSION['toast_mensaje'] = $resultado['mensaje'] ?? 'Error al crear el producto';
+                    $_SESSION['toast_tipo'] = 'error';
+                    // Redirigir a dashboard
+                    header('Location: /artesanoDigital/artesano/dashboard');
                     exit;
                 }
             } catch (\Exception $e) {
                 // Registrar el error
                 error_log("Excepción al crear producto: " . $e->getMessage());
-                // Redirigir con mensaje de error
-                header('Location: /artesanoDigital/artesano/dashboard?mensaje=' . urlencode('Error al crear el producto: ' . $e->getMessage()) . '&tipo=error');
+                // Guardar mensaje de error en sesión para mostrar toast
+                $_SESSION['toast_mensaje'] = 'Error al crear el producto: ' . $e->getMessage();
+                $_SESSION['toast_tipo'] = 'error';
+                // Redirigir a dashboard
+                header('Location: /artesanoDigital/artesano/dashboard');
                 exit;
             }
         } elseif ($accion === 'actualizar_producto') {
             try {
                 // Validar que el ID del producto existe
-                if (empty($_POST['id_producto'])) {
+                $producto_id = $_POST['producto_id'] ?? $_POST['id_producto'] ?? '';
+                if (empty($producto_id)) {
+                    // Verificar si es una petición AJAX
+                    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'ID del producto no especificado'
+                        ]);
+                        exit;
+                    }
                     header('Location: /artesanoDigital/artesano/dashboard?mensaje=ID del producto no especificado&tipo=error');
                     exit;
                 }
                 
                 // Procesar la solicitud para actualizar un producto
-                $resultado = $this->actualizar((int)$_POST['id_producto'], $_POST, $_FILES);
+                $resultado = $this->actualizar((int)$producto_id, $_POST, $_FILES);
                 
+                // Verificar si es una petición AJAX
+                if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    if (!$resultado['error']) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'Producto actualizado correctamente'
+                        ]);
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $resultado['mensaje'] ?? 'Error al actualizar el producto'
+                        ]);
+                    }
+                    exit;
+                }
+                
+                // Respuesta tradicional para formularios
                 if (!$resultado['error']) {
-                    header('Location: /artesanoDigital/artesano/dashboard?mensaje=Producto actualizado correctamente&tipo=success');
+                    $_SESSION['toast_mensaje'] = 'Producto actualizado correctamente';
+                    $_SESSION['toast_tipo'] = 'exito';
+                    header('Location: /artesanoDigital/artesano/dashboard');
                     exit;
                 } else {
-                    header('Location: /artesanoDigital/artesano/dashboard?mensaje=' . urlencode($resultado['mensaje'] ?? 'Error al actualizar el producto') . '&tipo=error');
+                    $_SESSION['toast_mensaje'] = $resultado['mensaje'] ?? 'Error al actualizar el producto';
+                    $_SESSION['toast_tipo'] = 'error';
+                    header('Location: /artesanoDigital/artesano/dashboard');
                     exit;
                 }
             } catch (\Exception $e) {
                 error_log("Error al actualizar producto: " . $e->getMessage());
+                
+                // Verificar si es una petición AJAX
+                if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Error al actualizar el producto: ' . $e->getMessage()
+                    ]);
+                    exit;
+                }
+                
                 header('Location: /artesanoDigital/artesano/dashboard?mensaje=' . urlencode('Error al actualizar el producto: ' . $e->getMessage()) . '&tipo=error');
                 exit;
             }
         } elseif ($accion === 'eliminar_producto') {
             try {
                 // Validar que el ID del producto existe
-                if (empty($_POST['id_producto'])) {
+                $producto_id = $_POST['producto_id'] ?? $_POST['id_producto'] ?? '';
+                if (empty($producto_id)) {
+                    // Verificar si es una petición AJAX
+                    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'ID del producto no especificado'
+                        ]);
+                        exit;
+                    }
                     header('Location: /artesanoDigital/artesano/dashboard?mensaje=ID del producto no especificado&tipo=error');
                     exit;
                 }
                 
                 // Procesar la solicitud para eliminar un producto
-                $resultado = $this->eliminar((int)$_POST['id_producto']);
+                $resultado = $this->eliminar((int)$producto_id);
                 
+                // Verificar si es una petición AJAX
+                if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    if (!$resultado['error']) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'Producto eliminado correctamente'
+                        ]);
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $resultado['mensaje'] ?? 'Error al eliminar el producto'
+                        ]);
+                    }
+                    exit;
+                }
+                
+                // Respuesta tradicional para formularios
                 if (!$resultado['error']) {
                     header('Location: /artesanoDigital/artesano/dashboard?mensaje=Producto eliminado correctamente&tipo=success');
                     exit;
@@ -522,6 +659,18 @@ class ControladorProductosArtesano
                 }
             } catch (\Exception $e) {
                 error_log("Error al eliminar producto: " . $e->getMessage());
+                
+                // Verificar si es una petición AJAX
+                if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Error al eliminar el producto: ' . $e->getMessage()
+                    ]);
+                    exit;
+                }
+                
                 header('Location: /artesanoDigital/artesano/dashboard?mensaje=' . urlencode('Error al eliminar el producto: ' . $e->getMessage()) . '&tipo=error');
                 exit;
             }
