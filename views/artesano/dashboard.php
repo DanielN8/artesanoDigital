@@ -835,7 +835,7 @@ $contenido = ob_get_clean();
 include __DIR__ . '/../layouts/base.php';
 ?>
 
- </script>
+ <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Referencia al select de tiendas
     const selectTienda = document.getElementById('id_tienda');
@@ -3332,7 +3332,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     </style>
-
+    </style>
+    
     <script>
         // Inicializar iconos de Lucide
         document.addEventListener('DOMContentLoaded', function() {

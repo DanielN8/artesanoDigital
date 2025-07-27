@@ -948,6 +948,77 @@ ob_start();
         </div>
     </div>
 
+    <!-- Modal para nuevo producto -->
+    <div id="modalNuevoProducto" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Agregar Nuevo Producto</h2>
+                <button class="modal-close" onclick="cerrarModalNuevo()">&times;</button>
+            </div>
+            
+            <form id="formNuevoProducto" method="post" action="/artesanoDigital/artesano/productos/crear" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="accion" value="crear_producto">
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Producto</label>
+                        <input type="text" id="nombre" name="nombre" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" class="form-textarea" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="precio">Precio (B/.)</label>
+                            <input type="number" id="precio" name="precio" class="form-input" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="stock">Stock Disponible</label>
+                            <input type="number" id="stock" name="stock" class="form-input" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="id_tienda">Tienda</label>
+                            <select id="id_tienda" name="id_tienda" class="form-select" required>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="descuento">Descuento (%)</label>
+                            <input type="number" id="descuento" name="descuento" class="form-input" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imagen">Imagen del Producto</label>
+                        <input type="file" id="imagen" name="imagen" class="form-input" accept="image/*" required>
+                        <div class="form-help">Imagen principal del producto. Recomendado: 800x800px</div>
+                        <div id="imagen-preview" class="mt-2 d-none">
+                            <img src="" alt="Vista previa" style="max-width: 100%; max-height: 200px;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="activo" name="activo" value="1" checked>
+                            Publicar producto inmediatamente
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModalNuevo()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Funcionalidades de búsqueda y filtros
         document.addEventListener('DOMContentLoaded', function() {
@@ -1006,8 +1077,46 @@ ob_start();
         
         // Funciones de acciones
         function agregarProducto() {
-            // Redirigir al dashboard para abrir el modal de nuevo producto
-            window.location.href = '/artesanoDigital/dashboard/artesano';
+            // Mostrar modal de nuevo producto
+            document.getElementById('modalNuevoProducto').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Cargar la tienda del artesano
+            fetch(`/artesanoDigital/api/productos.php?accion=obtener_tienda`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(tiendaData => {
+                if (tiendaData.success && tiendaData.tienda) {
+                    const selectTienda = document.getElementById('id_tienda');
+                    selectTienda.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.value = tiendaData.tienda.id_tienda;
+                    option.textContent = tiendaData.tienda.nombre_tienda;
+                    option.selected = true;
+                    selectTienda.appendChild(option);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar tienda:', error);
+            });
+        }
+        
+        // Cerrar modal de nuevo producto
+        function cerrarModalNuevo() {
+            document.getElementById('modalNuevoProducto').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Limpiar formulario
+            document.getElementById('formNuevoProducto').reset();
+            const preview = document.getElementById('imagen-preview');
+            if (preview) {
+                preview.classList.add('d-none');
+            }
         }
         
         // Guardar producto
@@ -1388,9 +1497,14 @@ ob_start();
         
         // Cerrar modal al hacer clic fuera
         document.addEventListener('click', function(event) {
-            const modal = document.getElementById('modalEditar');
-            if (event.target === modal) {
+            const modalEditar = document.getElementById('modalEditar');
+            const modalNuevo = document.getElementById('modalNuevoProducto');
+            
+            if (event.target === modalEditar) {
                 cerrarModal();
+            }
+            if (event.target === modalNuevo) {
+                cerrarModalNuevo();
             }
         });
         
@@ -1398,6 +1512,7 @@ ob_start();
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 cerrarModal();
+                cerrarModalNuevo();
             }
         });
         
@@ -1422,6 +1537,27 @@ ob_start();
                                 if (textElement) {
                                     textElement.textContent = 'Nueva imagen seleccionada';
                                 }
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Preview de imagen para nuevo producto
+            const inputImagenNuevo = document.getElementById('imagen');
+            if (inputImagenNuevo) {
+                inputImagenNuevo.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('imagen-preview');
+                            const img = preview.querySelector('img');
+                            
+                            if (preview && img) {
+                                img.src = e.target.result;
+                                preview.classList.remove('d-none');
                             }
                         };
                         reader.readAsDataURL(file);
