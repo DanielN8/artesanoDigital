@@ -513,32 +513,80 @@ class ControladorProductosArtesano
                 // Procesar la solicitud para crear un producto
                 $resultado = $this->crear($_POST, $_FILES);
                 
+                // Verificar si es una petición AJAX
+                $esAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+                
                 if (!$resultado['error']) {
                     error_log("Producto creado correctamente con ID: " . ($resultado['id_producto'] ?? 'desconocido'));
-                    // Guardar mensaje en sesión para mostrar toast
-                    $_SESSION['toast_mensaje'] = 'Producto creado correctamente';
-                    $_SESSION['toast_tipo'] = 'exito';
-                    // Redirigir a dashboard
-                    header('Location: /artesanoDigital/artesano/dashboard');
-                    exit;
+                    
+                    if ($esAjax) {
+                        // Respuesta JSON para AJAX
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => true,
+                            'exito' => true,
+                            'message' => 'Producto creado correctamente',
+                            'mensaje' => 'Producto creado correctamente',
+                            'id_producto' => $resultado['id_producto'] ?? null
+                        ]);
+                        exit;
+                    } else {
+                        // Guardar mensaje en sesión para mostrar toast
+                        $_SESSION['toast_mensaje'] = 'Producto creado correctamente';
+                        $_SESSION['toast_tipo'] = 'exito';
+                        // Redirigir a dashboard
+                        header('Location: /artesanoDigital/artesano/dashboard');
+                        exit;
+                    }
                 } else {
                     error_log("Error al crear producto: " . ($resultado['mensaje'] ?? 'Error desconocido'));
+                    
+                    if ($esAjax) {
+                        // Respuesta JSON para AJAX
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => false,
+                            'exito' => false,
+                            'message' => $resultado['mensaje'] ?? 'Error al crear el producto',
+                            'mensaje' => $resultado['mensaje'] ?? 'Error al crear el producto'
+                        ]);
+                        exit;
+                    } else {
+                        // Guardar mensaje de error en sesión para mostrar toast
+                        $_SESSION['toast_mensaje'] = $resultado['mensaje'] ?? 'Error al crear el producto';
+                        $_SESSION['toast_tipo'] = 'error';
+                        // Redirigir a dashboard
+                        header('Location: /artesanoDigital/artesano/dashboard');
+                        exit;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Registrar el error
+                error_log("Excepción al crear producto: " . $e->getMessage());
+                
+                // Verificar si es una petición AJAX
+                $esAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+                
+                if ($esAjax) {
+                    // Respuesta JSON para AJAX
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false,
+                        'exito' => false,
+                        'message' => 'Error al crear el producto: ' . $e->getMessage(),
+                        'mensaje' => 'Error al crear el producto: ' . $e->getMessage()
+                    ]);
+                    exit;
+                } else {
                     // Guardar mensaje de error en sesión para mostrar toast
-                    $_SESSION['toast_mensaje'] = $resultado['mensaje'] ?? 'Error al crear el producto';
+                    $_SESSION['toast_mensaje'] = 'Error al crear el producto: ' . $e->getMessage();
                     $_SESSION['toast_tipo'] = 'error';
                     // Redirigir a dashboard
                     header('Location: /artesanoDigital/artesano/dashboard');
                     exit;
                 }
-            } catch (\Exception $e) {
-                // Registrar el error
-                error_log("Excepción al crear producto: " . $e->getMessage());
-                // Guardar mensaje de error en sesión para mostrar toast
-                $_SESSION['toast_mensaje'] = 'Error al crear el producto: ' . $e->getMessage();
-                $_SESSION['toast_tipo'] = 'error';
-                // Redirigir a dashboard
-                header('Location: /artesanoDigital/artesano/dashboard');
-                exit;
             }
         } elseif ($accion === 'actualizar_producto') {
             try {

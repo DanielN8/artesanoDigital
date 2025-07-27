@@ -42,16 +42,16 @@ ob_start();
     </div>
     
     <?php if (!$tieneTienda): ?>
-        <div class="alert alert-warning">
-            <div class="alert-content">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                    <h4>Necesitas crear tu tienda</h4>
-                    <p>Antes de publicar productos, debes crear tu tienda de artesanías. Es un paso simple que te permitirá organizar y mostrar tus productos.</p>
-                    <button id="btnCrearTienda" class="btn btn-primary mt-2">Crear mi tienda ahora</button>
+            <div class="alert alert-warning">
+                <div class="alert-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h4>Necesitas crear tu tienda</h4>
+                        <p>Antes de publicar productos, debes crear tu tienda de artesanías. Es un paso simple que te permitirá organizar y mostrar tus productos.</p>
+                        <button id="btnCrearTienda" class="btn btn-primary mt-2">Crear mi tienda ahora</button>
+                    </div>
                 </div>
             </div>
-        </div>
     <?php endif; ?>
     <!-- Cards de Resumen -->
     <div class="resumen-cards-horizontal">
@@ -86,9 +86,7 @@ ob_start();
     </div>
     <!-- Botones de acción -->
     <div class="dashboard-actions-bar">
-        <button id="btnNuevoProducto" class="dashboard-btn dashboard-btn-blue" <?= !$tieneTienda ? 'disabled title="Primero debes crear una tienda"' : '' ?>>
-            <i class="fas fa-plus-circle"></i> Nuevo Producto
-        </button>
+
         <a href="/artesanoDigital/artesano/tienda" class="dashboard-btn dashboard-btn-green">
             <i class="fas fa-store"></i> <?= $tieneTienda ? 'Administrar' : 'Crear' ?> Mi Tienda
         </a>
@@ -121,43 +119,43 @@ ob_start();
                     </div>
                     <div class="card-body">
                         <?php if (empty($pedidos_recientes ?? [])): ?>
-                                <p class="empty-state">No hay pedidos recientes</p>
+                                    <p class="empty-state">No hay pedidos recientes</p>
                         <?php else: ?>
-                                <div class="table-responsive">
-                                    <table class="table pedidos-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Pedido #</th>
-                                                <th>Cliente</th>
-                                                <th>Fecha</th>
-                                                <th>Total</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($pedidos_recientes as $pedido): ?>
-                                                    <tr class="estado-<?= $pedido['estado'] ?>">
-                                                        <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
-                                                        <td><?= htmlspecialchars($pedido['cliente_nombre'] ?? 'Cliente') ?></td>
-                                                        <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
-                                                        <td>B/. <?= number_format($pedido['total'], 2) ?></td>
-                                                        <td>
-                                                            <span class="badge status-<?= $pedido['estado'] ?>">
-                                                                <?= ucfirst($pedido['estado']) ?>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-primary ver-pedido"
-                                                                data-id="<?= $pedido['id_pedido'] ?>">
-                                                                Ver detalles
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    <div class="table-responsive">
+                                        <table class="table pedidos-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pedido #</th>
+                                                    <th>Cliente</th>
+                                                    <th>Fecha</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($pedidos_recientes as $pedido): ?>
+                                                            <tr class="estado-<?= $pedido['estado'] ?>">
+                                                                <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
+                                                                <td><?= htmlspecialchars($pedido['cliente_nombre'] ?? 'Cliente') ?></td>
+                                                                <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
+                                                                <td>B/. <?= number_format($pedido['total'], 2) ?></td>
+                                                                <td>
+                                                                    <span class="badge status-<?= $pedido['estado'] ?>">
+                                                                        <?= ucfirst($pedido['estado']) ?>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-primary ver-pedido"
+                                                                        data-id="<?= $pedido['id_pedido'] ?>">
+                                                                        Ver detalles
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -174,44 +172,44 @@ ob_start();
                     </div>
                     <div class="card-body">
                         <?php if (empty($pedidos_personales ?? [])): ?>
-                                <p class="empty-state">No has realizado ningún pedido como cliente todavía</p>
-                                <div class="empty-action">
-                                    <a href="/artesanoDigital/productos" class="dashboard-btn dashboard-btn-blue">Explorar
-                                        Productos</a>
-                                </div>
+                                    <p class="empty-state">No has realizado ningún pedido como cliente todavía</p>
+                                    <div class="empty-action">
+                                        <a href="/artesanoDigital/productos" class="dashboard-btn dashboard-btn-blue">Explorar
+                                            Productos</a>
+                                    </div>
                         <?php else: ?>
-                                <div class="table-responsive">
-                                    <table class="table pedidos-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Pedido #</th>
-                                                <th>Fecha</th>
-                                                <th>Total</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($pedidos_personales as $pedido): ?>
-                                                    <tr>
-                                                        <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
-                                                        <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
-                                                        <td>B/. <?= number_format($pedido['total'], 2) ?></td>
-                                                        <td>
-                                                            <span
-                                                                class="badge status-<?= $pedido['estado'] ?>"><?= ucfirst($pedido['estado']) ?></span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-primary ver-pedido-cliente"
-                                                                data-id="<?= $pedido['id_pedido'] ?>">
-                                                                Ver detalles
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    <div class="table-responsive">
+                                        <table class="table pedidos-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pedido #</th>
+                                                    <th>Fecha</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($pedidos_personales as $pedido): ?>
+                                                            <tr>
+                                                                <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
+                                                                <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
+                                                                <td>B/. <?= number_format($pedido['total'], 2) ?></td>
+                                                                <td>
+                                                                    <span
+                                                                        class="badge status-<?= $pedido['estado'] ?>"><?= ucfirst($pedido['estado']) ?></span>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-primary ver-pedido-cliente"
+                                                                        data-id="<?= $pedido['id_pedido'] ?>">
+                                                                        Ver detalles
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -219,72 +217,6 @@ ob_start();
         </div>
 
     </div>
-
-<!-- Modal para nuevo producto -->
-<div id="modalNuevoProducto" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Agregar Nuevo Producto</h2>
-        <form id="formNuevoProducto" method="post" action="/artesanoDigital/artesano/productos/crear" enctype="multipart/form-data">
-            <input type="hidden" name="accion" value="crear_producto">
-            
-            <div class="form-group">
-                <label for="nombre">Nombre del Producto</label>
-                <input type="text" id="nombre" name="nombre" class="form-input" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" name="descripcion" class="form-textarea" rows="4" required></textarea>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group col-6">
-                    <label for="precio">Precio (B/.)</label>
-                    <input type="number" id="precio" name="precio" class="form-input" min="0" step="0.01" required>
-                </div>
-                <div class="form-group col-6">
-                    <label for="stock">Stock Disponible</label>
-                    <input type="number" id="stock" name="stock" class="form-input" min="0" required>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group col-6">
-                    <label for="id_tienda">Tienda</label>
-                    <select id="id_tienda" name="id_tienda" class="form-select" required>
-                        <!-- Se cargará dinámicamente -->
-                    </select>
-                </div>
-                <div class="form-group col-6">
-                    <label for="descuento">Descuento (%)</label>
-                    <input type="number" id="descuento" name="descuento" class="form-input" min="0" max="100" value="0">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="imagen">Imagen del Producto</label>
-                <input type="file" id="imagen" name="imagen" class="form-input" accept="image/*" required>
-                <div class="form-help">Imagen principal del producto. Recomendado: 800x800px</div>
-                <div id="imagen-preview" class="mt-2 d-none">
-                    <img src="" alt="Vista previa" style="max-width: 100%; max-height: 200px;">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="activo" name="activo" value="1" checked>
-                    Publicar producto inmediatamente
-                </label>
-            </div>
-            
-            <div class="form-buttons">
-                <button type="button" class="btn btn-secondary cancelar-modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar Producto</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- Modal para crear tienda -->
 <div id="modalCrearTienda" class="modal">
@@ -843,20 +775,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Añadir la tienda del artesano al select si existe
     if (selectTienda) {
         <?php if ($tieneTienda): ?>
-            // Crear y añadir la opción de la tienda
-            const option = document.createElement('option');
-            option.value = "<?= $tiendaExistente['id_tienda'] ?>";
-            option.textContent = "<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>";
-            option.selected = true;
-            selectTienda.appendChild(option);
+                // Crear y añadir la opción de la tienda
+                const option = document.createElement('option');
+                option.value = "<?= $tiendaExistente['id_tienda'] ?>";
+                option.textContent = "<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>";
+                option.selected = true;
+                selectTienda.appendChild(option);
         <?php else: ?>
-            // Si no tiene tienda, mostrar mensaje en el select
-            const option = document.createElement('option');
-            option.value = "";
-            option.textContent = "Primero debes crear una tienda";
-            option.disabled = true;
-            option.selected = true;
-            selectTienda.appendChild(option);
+                // Si no tiene tienda, mostrar mensaje en el select
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "Primero debes crear una tienda";
+                option.disabled = true;
+                option.selected = true;
+                selectTienda.appendChild(option);
         <?php endif; ?>
     }
     
@@ -1153,11 +1085,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Agregar option para la tienda actual del artesano
                 <?php if ($tieneTienda && isset($tiendaExistente['id_tienda'])): ?>
-                    const option = document.createElement('option');
-                    option.value = '<?= htmlspecialchars($tiendaExistente['id_tienda']) ?>';
-                    option.textContent = '<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>';
-                    option.selected = true;
-                    selectTienda.appendChild(option);
+                        const option = document.createElement('option');
+                        option.value = '<?= htmlspecialchars($tiendaExistente['id_tienda']) ?>';
+                        option.textContent = '<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>';
+                        option.selected = true;
+                        selectTienda.appendChild(option);
                 <?php endif; ?>
             }
         }
@@ -3333,7 +3265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     </style>
     </style>
-    
+
     <script>
         // Inicializar iconos de Lucide
         document.addEventListener('DOMContentLoaded', function() {
@@ -4167,21 +4099,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar si hay mensajes de toast en la sesión y mostrarlos
     <?php if (isset($_SESSION['toast_mensaje'])): ?>
-            // Si existe la función Toast del sistema principal, usarla
-            if (typeof window.Toast !== 'undefined') {
-                // Usar sistema Toast global
-                window.Toast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
-            } else if (typeof NotificacionesToast !== 'undefined') {
-                // Usar sistema NotificacionesToast
-                NotificacionesToast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
-            } else {
-                // Fallback a la función local
-                mostrarNotificacion('<?php echo addslashes($_SESSION['toast_mensaje']); ?>', '<?php echo $_SESSION['toast_tipo'] === 'exito' ? 'success' : $_SESSION['toast_tipo']; ?>');
-            }
-        <?php
-        // Limpiar los mensajes de la sesión después de usarlos
-        unset($_SESSION['toast_mensaje']);
-        unset($_SESSION['toast_tipo']);
+                // Si existe la función Toast del sistema principal, usarla
+                if (typeof window.Toast !== 'undefined') {
+                    // Usar sistema Toast global
+                    window.Toast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
+                } else if (typeof NotificacionesToast !== 'undefined') {
+                    // Usar sistema NotificacionesToast
+                    NotificacionesToast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
+                } else {
+                    // Fallback a la función local
+                    mostrarNotificacion('<?php echo addslashes($_SESSION['toast_mensaje']); ?>', '<?php echo $_SESSION['toast_tipo'] === 'exito' ? 'success' : $_SESSION['toast_tipo']; ?>');
+                }
+            <?php
+            // Limpiar los mensajes de la sesión después de usarlos
+            unset($_SESSION['toast_mensaje']);
+            unset($_SESSION['toast_tipo']);
     endif; ?>
 });
 </script>

@@ -956,7 +956,7 @@ ob_start();
                 <button class="modal-close" onclick="cerrarModalNuevo()">&times;</button>
             </div>
             
-            <form id="formNuevoProducto" method="post" action="/artesanoDigital/artesano/productos/crear" enctype="multipart/form-data">
+            <form id="formNuevoProducto" onsubmit="crearProducto(event)">
                 <div class="modal-body">
                     <input type="hidden" name="accion" value="crear_producto">
                     
@@ -1117,6 +1117,63 @@ ob_start();
             if (preview) {
                 preview.classList.add('d-none');
             }
+        }
+        
+        // Crear nuevo producto vía AJAX
+        function crearProducto(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('formNuevoProducto');
+            const formData = new FormData(form);
+            
+            // Mostrar indicador de carga
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+            submitBtn.disabled = true;
+            
+            // Usar el mismo endpoint de la API que las otras funciones
+            fetch('/artesanoDigital/api/productos.php', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error("Respuesta no es JSON:", text);
+                        throw new Error("La respuesta no es JSON válido: " + text.substring(0, 100));
+                    }
+                });
+            })
+            .then(data => {
+                if (data.success || data.exito) {
+                    showToast('Producto creado exitosamente', 'success');
+                    cerrarModalNuevo();
+                    // Recargar la página para mostrar el nuevo producto
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showToast(data.message || data.mensaje || 'Error al crear el producto', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error al conectar con el servidor: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restaurar botón
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
         }
         
         // Guardar producto

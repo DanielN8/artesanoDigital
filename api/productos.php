@@ -51,7 +51,9 @@ try {
             // Verificar si hay una acción específica en los datos POST
             $accion = $_POST['accion'] ?? null;
             
-            if ($accion === 'actualizar_producto' && isset($_POST['id_producto'])) {
+            if ($accion === 'crear_producto') {
+                crearProductoFormData($db);
+            } elseif ($accion === 'actualizar_producto' && isset($_POST['id_producto'])) {
                 $productoId = $_POST['id_producto'];
                 actualizarProductoFormData($db, $productoId);
             } elseif ($accion === 'eliminar_producto' && isset($_POST['id_producto'])) {
@@ -82,6 +84,7 @@ try {
                     actualizarProducto($db, $productoId);
                 }
             } else {
+                // Si no hay acción específica ni ID, intentar crear producto con JSON
                 crearProducto($db);
             }
             break;
@@ -221,6 +224,98 @@ function obtenerProducto($db, $productoId) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Error al obtener producto: ' . $e->getMessage()]);
+    }
+}
+
+function crearProductoFormData($db) {
+    try {
+        $artesanoId = $_SESSION['usuario_id'];
+        
+        // Validar datos requeridos
+        if (empty($_POST['nombre']) || empty($_POST['descripcion']) || !isset($_POST['precio'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Datos incompletos. Nombre, descripción y precio son requeridos.']);
+            return;
+        }
+        
+        // Obtener ID de tienda del artesano
+        $stmtTienda = $db->prepare("SELECT id_tienda FROM tiendas WHERE id_usuario = ?");
+        $stmtTienda->execute([$artesanoId]);
+        $tienda = $stmtTienda->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$tienda) {
+            http_response_code(400);
+            echo json_encode(['error' => 'El artesano no tiene una tienda configurada']);
+            return;
+        }
+        
+        // Procesar imagen si existe
+        $rutaImagen = null;
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $archivo = $_FILES['imagen'];
+            $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+            $nombreArchivo = 'prod_' . uniqid() . '.' . $extension;
+            $rutaDestino = dirname(__FILE__) . '/../uploads/productos/' . $nombreArchivo;
+            
+            // Crear directorio si no existe
+            $directorioDestino = dirname($rutaDestino);
+            if (!is_dir($directorioDestino)) {
+                mkdir($directorioDestino, 0755, true);
+            }
+            
+            // Mover archivo
+            if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+                $rutaImagen = 'uploads/productos/' . $nombreArchivo;
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Error al subir la imagen']);
+                return;
+            }
+        }
+        
+        // Insertar producto
+        $query = "
+            INSERT INTO productos (
+                id_tienda, nombre, descripcion, precio, descuento, 
+                imagen, stock, activo, fecha_creacion
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        ";
+        
+        $stmt = $db->prepare($query);
+        $resultado = $stmt->execute([
+            $tienda['id_tienda'],
+            $_POST['nombre'],
+            $_POST['descripcion'],
+            floatval($_POST['precio']),
+            floatval($_POST['descuento'] ?? 0),
+            $rutaImagen,
+            intval($_POST['stock'] ?? 0),
+            isset($_POST['activo']) ? 1 : 0
+        ]);
+        
+        if ($resultado) {
+            $nuevoId = $db->lastInsertId();
+            echo json_encode([
+                'success' => true,
+                'exito' => true,
+                'data' => ['id_producto' => $nuevoId],
+                'message' => 'Producto creado exitosamente',
+                'mensaje' => 'Producto creado exitosamente'
+            ]);
+        } else {
+            throw new Exception('Error al insertar producto en la base de datos');
+        }
+        
+    } catch (Exception $e) {
+        error_log("Error en crearProductoFormData: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'exito' => false,
+            'error' => 'Error al crear producto: ' . $e->getMessage(),
+            'message' => 'Error al crear producto: ' . $e->getMessage(),
+            'mensaje' => 'Error al crear producto: ' . $e->getMessage()
+        ]);
     }
 }
 

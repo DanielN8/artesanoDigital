@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2025 at 06:52 AM
+-- Generation Time: Jul 27, 2025 at 10:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -190,7 +190,7 @@ INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `estado`, `metodo_pago`, `tota
 (25, 6, 'en_proceso', 'tarjeta', 281.00, 281.00, 0.00, '2025-07-25 22:49:37', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"sadasdas\",\"ciudad\":\"Chame\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
 (26, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-25 23:55:05', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-1234\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
 (27, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:15:55', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
-(28, 6, 'en_proceso', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:21:19', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasds\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 04:46:01'),
+(28, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:21:19', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasds\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 06:39:20'),
 (29, 10, 'confirmado', 'yappy', 105.00, 110.00, 5.00, '2025-07-26 15:12:59', NULL, NULL, NULL, NULL, 'Bella Vista, Ciudad de Panamá', 'Envío estándar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 20:12:59'),
 (30, 7, 'pendiente', 'yappy', 359.50, NULL, 0.00, '2025-07-26 17:07:50', NULL, NULL, NULL, NULL, '{\"nombre\":\"Luis Mendoza\",\"direccion\":\"Calle principal, Casa 123\",\"ciudad\":\"La Chorrera\",\"telefono\":\"6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 22:07:50'),
 (31, 7, 'pendiente', 'tarjeta', 359.50, NULL, 0.00, '2025-07-26 17:48:16', NULL, NULL, NULL, NULL, '{\"nombre\":\"Luis Mendoza\",\"direccion\":\"Calle principal, Casa 123\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 22:48:16'),
@@ -231,7 +231,9 @@ INSERT INTO `pedido_eventos` (`id_evento`, `id_pedido`, `tipo`, `descripcion`, `
 (17, 28, 'estado_cambio', 'Estado cambiado a: cancelado', '2025-07-26 19:12:05', 7),
 (18, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-26 19:15:26', 7),
 (19, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 01:17:14', 7),
-(20, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-27 04:46:01', 7);
+(20, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-27 04:46:01', 7),
+(21, 28, 'estado_cambio', 'Estado cambiado a: cancelado', '2025-07-27 06:39:16', 7),
+(22, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 06:39:20', 7);
 
 -- --------------------------------------------------------
 
@@ -332,20 +334,14 @@ INSERT INTO `productos` (`id_producto`, `id_tienda`, `nombre`, `descripcion`, `p
 (7, 3, 'Bolso Tejido', 'Bolso artesanal tejido con fibras naturales y diseños étnicos', 38.00, 0.00, 'productos/bolso1.jpg', 7, 1, '2025-07-17 10:43:51'),
 (8, 4, 'Aretes de Tagua', 'Aretes elaborados con semillas de tagua, pintados a mano con diseños naturales', 89.00, 10.00, 'public/productos/prod_687d53cc28804_472775.jpg', 77, 1, '2025-07-20 15:38:36'),
 (9, 4, 'Cuadro de Mola', 'Decoración enmarcada con diseño tradicional guna elaborado en tela de mola', 100.00, 50.00, 'public/productos/prod_688431978e85f_test-image.jpg', 46, 1, '2025-07-25 20:38:31'),
-(10, 4, 'Bolso Wayuu', 'Bolso tejido a mano con patrones coloridos inspirados en la cultura wayuu', 12.00, 2.00, 'public/productos/prod_688435e006900_test-image.jpg', 0, 1, '2025-07-25 20:56:48'),
+(10, 4, 'Bolso Wayuu', 'Bolso tejido a mano con patrones coloridos inspirados en la cultura wayuu', 12.00, 0.00, 'public/productos/prod_688435e006900_test-image.jpg', 1, 1, '2025-07-25 20:56:48'),
 (11, 4, 'Cintillo Emberá', 'Cintillo artesanal elaborado con chaquiras por mujeres Emberá', 223.00, 2.00, 'public/productos/prod_68843a3841062_test-image.jpg', 19, 1, '2025-07-25 21:15:20'),
-(12, 4, 'Imán de Tagua Pintado', 'Imán decorativo hecho con tagua tallada y pintada con motivos panameños', 123.00, 3.00, 'public/productos/prod_688506510261d_test-image.jpg', 222, 1, '2025-07-26 11:46:09'),
+(12, 4, 'Imán de Tagua Pintado', 'Imán decorativo hecho con tagua tallada y pintada con motivos panameños', 123.00, 3.00, 'public/productos/prod_688506510261d_test-image.jpg', 1, 1, '2025-07-26 11:46:09'),
 (13, 5, 'Collar de Chaquira', 'Collar tradicional Emberá con cuentas de colores vivos', 25.00, 5.00, 'productos/collar_chaquira.jpg', 20, 1, '2025-07-26 15:12:59'),
 (14, 6, 'Canasta Ngäbe', 'Canasta tejida a mano con palma natural', 30.00, 3.00, 'productos/canasta_ngabe.jpg', 12, 1, '2025-07-26 15:12:59'),
 (16, 1, 'Pintura sobre Tagua', 'Semilla tallada y pintada con motivos autóctonos panameños', 40.00, 5.00, 'public/productos/tagua.png', 2, 1, '2025-07-26 15:12:59'),
 (17, 2, 'Mini Tambor Artesanal', 'Mini tambor típico panameño, decorado a mano', 15.00, 1.50, 'public/productos/tambor.jpg', 28, 1, '2025-07-26 15:12:59'),
-(18, 3, 'Pintura de la Pollera', 'Pintura sobre lienzo representando una pollera panameña', 80.00, 8.00, 'public/productos/pollera.jpg', 10, 1, '2025-07-26 15:12:59'),
-(19, 4, 'TEST', 'asd', 111.00, 11.00, 'public/productos/prod_68859b72d267a_test-image.jpg', 111, 1, '2025-07-26 22:22:26'),
-(20, 4, 'TEST', 'asd', 123.00, 2.00, 'public/productos/prod_68859cf6da055_test-image.jpg', 12, 1, '2025-07-26 22:28:54'),
-(21, 4, 'TEST', 'asd', 12.00, 0.00, 'prod_68859e0d5fc05.jpg', 2, 1, '2025-07-26 22:33:33'),
-(22, 4, 'TEST', 'asd', 12.00, 0.00, 'prod_68859f756a2e2.jpg', 2, 1, '2025-07-26 22:39:33'),
-(23, 4, 'asd', 'asd', 123.00, 0.00, 'prod_68859f8d8e05e.jpg', 12, 1, '2025-07-26 22:39:57'),
-(24, 4, 'TEST', 'asd', 12.00, 2.00, 'public/productos/prod_6885af17bdbdf_test-image.jpg', 2, 1, '2025-07-26 23:46:15');
+(18, 3, 'Pintura de la Pollera', 'Pintura sobre lienzo representando una pollera panameña', 80.00, 8.00, 'public/productos/pollera.jpg', 10, 1, '2025-07-26 15:12:59');
 
 -- --------------------------------------------------------
 
@@ -566,7 +562,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT for table `pedido_eventos`
 --
 ALTER TABLE `pedido_eventos`
-  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `pedido_productos`
@@ -578,7 +574,7 @@ ALTER TABLE `pedido_productos`
 -- AUTO_INCREMENT for table `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `recuperaciones_contrasena`
