@@ -86,7 +86,9 @@ ob_start();
     </div>
     <!-- Botones de acción -->
     <div class="dashboard-actions-bar">
-
+        <button id="btnNuevoProducto" class="dashboard-btn dashboard-btn-blue" <?= !$tieneTienda ? 'disabled title="Primero debes crear una tienda"' : '' ?>>
+            <i class="fas fa-plus-circle"></i> Nuevo Producto
+        </button>
         <a href="/artesanoDigital/artesano/tienda" class="dashboard-btn dashboard-btn-green">
             <i class="fas fa-store"></i> <?= $tieneTienda ? 'Administrar' : 'Crear' ?> Mi Tienda
         </a>
@@ -833,8 +835,287 @@ $contenido = ob_get_clean();
 include __DIR__ . '/../layouts/base.php';
 ?>
 
- </script>
+ <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencia al select de tiendas
+    const selectTienda = document.getElementById('id_tienda');
+    
+    // Añadir la tienda del artesano al select si existe
+    if (selectTienda) {
+        <?php if ($tieneTienda): ?>
+            // Crear y añadir la opción de la tienda
+            const option = document.createElement('option');
+            option.value = "<?= $tiendaExistente['id_tienda'] ?>";
+            option.textContent = "<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>";
+            option.selected = true;
+            selectTienda.appendChild(option);
+        <?php else: ?>
+            // Si no tiene tienda, mostrar mensaje en el select
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "Primero debes crear una tienda";
+            option.disabled = true;
+            option.selected = true;
+            selectTienda.appendChild(option);
+        <?php endif; ?>
+    }
+    
+    // Vista previa de imagen del producto
+    const inputImagen = document.getElementById('imagen');
+    const imagenPreview = document.getElementById('imagen-preview');
+    if (inputImagen && imagenPreview) {
+        inputImagen.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagenPreview.classList.remove('d-none');
+                    imagenPreview.querySelector('img').src = e.target.result;
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+    
+    // Mostrar modal de nueva tienda
+    const btnCrearTienda = document.getElementById('btnCrearTienda');
+    const modalCrearTienda = document.getElementById('modalCrearTienda');
+    if (btnCrearTienda && modalCrearTienda) {
+        btnCrearTienda.addEventListener('click', function() {
+            modalCrearTienda.style.display = 'block';
+        });
+    }
+    
+    // Mostrar modal de nuevo producto
+    const btnNuevoProducto = document.getElementById('btnNuevoProducto');
+    const btnNuevoProductoTab = document.getElementById('btnNuevoProductoTab');
+    const btnNuevoProductoEmpty = document.getElementById('btnNuevoProductoEmpty');
+    const modalNuevoProducto = document.getElementById('modalNuevoProducto');
+    
+    [btnNuevoProducto, btnNuevoProductoTab, btnNuevoProductoEmpty].forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', function() {
+                if (!btn.hasAttribute('disabled')) {
+                    modalNuevoProducto.style.display = 'block';
+                }
+            });
+        }
+    });
+    
+    // Cerrar modales
+    document.querySelectorAll('.close, .cancelar-modal').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        });
+    });
+    
+    // Cerrar modales cuando se hace clic fuera
+    window.addEventListener('click', function(event) {
+        document.querySelectorAll('.modal').forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+});
 
+// JavaScript para modal de editar producto
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEditarProducto = document.getElementById('modalEditarProducto');
+    const formEditarProducto = document.getElementById('formEditarProducto');
+    const btnEliminarProducto = document.getElementById('btnEliminarProducto');
+    
+    // Event listener para botones "Ver detalles" - Redirigir a página modularizada
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-ver-detalles')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const btn = e.target.closest('.btn-ver-detalles');
+            const productoId = btn.getAttribute('data-id');
+            console.log('Redirigiendo a detalle de producto ID:', productoId);
+            // Redirigir a la página de detalle modularizada
+            window.location.href = `/artesanoDigital/artesano/detalle_productos?id=${productoId}`;
+        }
+    });
+    
+    // Función para abrir el modal y cargar datos del producto
+    async function abrirModalEditarProducto(productoId) {
+        try {
+            // Mostrar modal
+            modalEditarProducto.style.display = 'block';
+            
+            // Cargar datos del producto
+            const response = await fetch(`/artesanoDigital/artesano/productos/crear?action=obtener&id=${productoId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const producto = data.producto;
+                
+                // Llenar el formulario con los datos
+                document.getElementById('editProductoId').value = producto.id_producto;
+                document.getElementById('editNombre').value = producto.nombre;
+                document.getElementById('editDescripcion').value = producto.descripcion;
+                document.getElementById('editPrecio').value = producto.precio;
+                document.getElementById('editStock').value = producto.stock;
+                document.getElementById('editDescuento').value = producto.descuento || 0;
+                document.getElementById('editActivo').checked = producto.activo == 1;
+                
+                // Establecer categoría
+                const selectCategoria = document.getElementById('editCategoria');
+                if (selectCategoria && producto.categoria) {
+                    selectCategoria.value = producto.categoria;
+                }
+                
+                // Cargar tienda
+                const selectTienda = document.getElementById('editTienda');
+                selectTienda.innerHTML = '';
+                const option = document.createElement('option');
+                option.value = producto.id_tienda;
+                option.textContent = producto.nombre_tienda || 'Mi tienda';
+                option.selected = true;
+                selectTienda.appendChild(option);
+                
+                // Mostrar imagen actual si existe
+                const imgActual = document.querySelector('#editImagenActual img');
+                const contenedorImagenActual = document.getElementById('editImagenActual');
+                
+                if (producto.imagen && producto.imagen.trim() !== '') {
+                    // Limpiar la ruta de la imagen
+                    let rutaImagen = producto.imagen;
+                    if (rutaImagen.startsWith('/')) {
+                        rutaImagen = rutaImagen.substring(1);
+                    }
+                    
+                    imgActual.src = '/artesanoDigital/' + rutaImagen;
+                    imgActual.onerror = function() {
+                        console.log('Error al cargar imagen:', this.src);
+                        contenedorImagenActual.style.display = 'none';
+                    };
+                    imgActual.onload = function() {
+                        console.log('Imagen cargada correctamente:', this.src);
+                    };
+                    contenedorImagenActual.style.display = 'block';
+                } else {
+                    contenedorImagenActual.style.display = 'none';
+                }
+                
+            } else {
+                alert('Error al cargar los datos del producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cargar los datos del producto');
+        }
+    }
+    
+    // Vista previa de nueva imagen
+    const inputEditImagen = document.getElementById('editImagen');
+    const editImagenPreview = document.getElementById('editImagenPreview');
+    if (inputEditImagen && editImagenPreview) {
+        inputEditImagen.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editImagenPreview.classList.remove('d-none');
+                    editImagenPreview.querySelector('img').src = e.target.result;
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            } else {
+                editImagenPreview.classList.add('d-none');
+            }
+        });
+    }
+    
+    // Manejar eliminación de producto
+    if (btnEliminarProducto) {
+        btnEliminarProducto.addEventListener('click', function() {
+            const productoId = document.getElementById('editProductoId').value;
+            const nombreProducto = document.getElementById('editNombre').value;
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar el producto "${nombreProducto}"? Esta acción no se puede deshacer.`)) {
+                eliminarProducto(productoId);
+            }
+        });
+    }
+    
+    // Función para eliminar producto
+    async function eliminarProducto(productoId) {
+        try {
+            const response = await fetch('/artesanoDigital/artesano/productos/crear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `accion=eliminar_producto&producto_id=${productoId}`
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert('Producto eliminado exitosamente');
+                modalEditarProducto.style.display = 'none';
+                // Recargar la página para mostrar los cambios
+                window.location.reload();
+            } else {
+                alert('Error al eliminar el producto: ' + (data.message || 'Error desconocido'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el producto');
+        }
+    }
+    
+    // Manejar envío del formulario de edición
+    if (formEditarProducto) {
+        formEditarProducto.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(formEditarProducto);
+            // Añadir la acción específica para actualizar
+            formData.append('accion', 'actualizar_producto');
+            
+            fetch('/artesanoDigital/artesano/productos/crear', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Producto actualizado exitosamente');
+                    modalEditarProducto.style.display = 'none';
+                    // Recargar la página para mostrar los cambios
+                    window.location.reload();
+                } else {
+                    alert('Error al actualizar el producto: ' + (data.message || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el producto');
+            });
+        });
+    }
+    
+    // Cerrar modal al hacer clic en cerrar o cancelar
+    document.querySelectorAll('#modalEditarProducto .close, #modalEditarProducto .cancelar-modal').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            modalEditarProducto.style.display = 'none';
+        });
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    window.addEventListener('click', function(event) {
+        if (event.target == modalEditarProducto) {
+            modalEditarProducto.style.display = 'none';
+        }
+    });
+});
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
