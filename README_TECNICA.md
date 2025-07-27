@@ -36,7 +36,7 @@ Artesano Digital es una plataforma e-commerce para artesanos de Panamá Oeste. P
    git clone https://github.com/DanielN8/artesano_digital.git
    cd artesano_digital
    ```
-2. Coloca el proyecto en `c:/xampp/htdocs/artesanoDigital`
+2. Coloca el proyecto en `c:/xampp/htdocs/artesanoDigital` (renombrar la carpeta del proyecto a "artesanoDigital")
 3. Crea la base de datos y ejecuta los scripts:
    - `estructura.sql`
    - `artesano_digital.sql`

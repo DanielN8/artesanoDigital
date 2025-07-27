@@ -42,16 +42,16 @@ ob_start();
     </div>
     
     <?php if (!$tieneTienda): ?>
-            <div class="alert alert-warning">
-                <div class="alert-content">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <h4>Necesitas crear tu tienda</h4>
-                        <p>Antes de publicar productos, debes crear tu tienda de artesanías. Es un paso simple que te permitirá organizar y mostrar tus productos.</p>
-                        <button id="btnCrearTienda" class="btn btn-primary mt-2">Crear mi tienda ahora</button>
-                    </div>
+        <div class="alert alert-warning">
+            <div class="alert-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h4>Necesitas crear tu tienda</h4>
+                    <p>Antes de publicar productos, debes crear tu tienda de artesanías. Es un paso simple que te permitirá organizar y mostrar tus productos.</p>
+                    <button id="btnCrearTienda" class="btn btn-primary mt-2">Crear mi tienda ahora</button>
                 </div>
             </div>
+        </div>
     <?php endif; ?>
     <!-- Cards de Resumen -->
     <div class="resumen-cards-horizontal">
@@ -119,43 +119,43 @@ ob_start();
                     </div>
                     <div class="card-body">
                         <?php if (empty($pedidos_recientes ?? [])): ?>
-                                    <p class="empty-state">No hay pedidos recientes</p>
+                                <p class="empty-state">No hay pedidos recientes</p>
                         <?php else: ?>
-                                    <div class="table-responsive">
-                                        <table class="table pedidos-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Pedido #</th>
-                                                    <th>Cliente</th>
-                                                    <th>Fecha</th>
-                                                    <th>Total</th>
-                                                    <th>Estado</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($pedidos_recientes as $pedido): ?>
-                                                            <tr class="estado-<?= $pedido['estado'] ?>">
-                                                                <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
-                                                                <td><?= htmlspecialchars($pedido['cliente_nombre'] ?? 'Cliente') ?></td>
-                                                                <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
-                                                                <td>B/. <?= number_format($pedido['total'], 2) ?></td>
-                                                                <td>
-                                                                    <span class="badge status-<?= $pedido['estado'] ?>">
-                                                                        <?= ucfirst($pedido['estado']) ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <button class="btn btn-sm btn-primary ver-pedido"
-                                                                        data-id="<?= $pedido['id_pedido'] ?>">
-                                                                        Ver detalles
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="table-responsive">
+                                    <table class="table pedidos-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Pedido #</th>
+                                                <th>Cliente</th>
+                                                <th>Fecha</th>
+                                                <th>Total</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($pedidos_recientes as $pedido): ?>
+                                                    <tr class="estado-<?= $pedido['estado'] ?>">
+                                                        <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
+                                                        <td><?= htmlspecialchars($pedido['cliente_nombre'] ?? 'Cliente') ?></td>
+                                                        <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
+                                                        <td>B/. <?= number_format($pedido['total'], 2) ?></td>
+                                                        <td>
+                                                            <span class="badge status-<?= $pedido['estado'] ?>">
+                                                                <?= ucfirst($pedido['estado']) ?>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-primary ver-pedido"
+                                                                data-id="<?= $pedido['id_pedido'] ?>">
+                                                                Ver detalles
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -172,44 +172,44 @@ ob_start();
                     </div>
                     <div class="card-body">
                         <?php if (empty($pedidos_personales ?? [])): ?>
-                                    <p class="empty-state">No has realizado ningún pedido como cliente todavía</p>
-                                    <div class="empty-action">
-                                        <a href="/artesanoDigital/productos" class="dashboard-btn dashboard-btn-blue">Explorar
-                                            Productos</a>
-                                    </div>
+                                <p class="empty-state">No has realizado ningún pedido como cliente todavía</p>
+                                <div class="empty-action">
+                                    <a href="/artesanoDigital/productos" class="dashboard-btn dashboard-btn-blue">Explorar
+                                        Productos</a>
+                                </div>
                         <?php else: ?>
-                                    <div class="table-responsive">
-                                        <table class="table pedidos-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Pedido #</th>
-                                                    <th>Fecha</th>
-                                                    <th>Total</th>
-                                                    <th>Estado</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($pedidos_personales as $pedido): ?>
-                                                            <tr>
-                                                                <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
-                                                                <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
-                                                                <td>B/. <?= number_format($pedido['total'], 2) ?></td>
-                                                                <td>
-                                                                    <span
-                                                                        class="badge status-<?= $pedido['estado'] ?>"><?= ucfirst($pedido['estado']) ?></span>
-                                                                </td>
-                                                                <td>
-                                                                    <button class="btn btn-sm btn-primary ver-pedido-cliente"
-                                                                        data-id="<?= $pedido['id_pedido'] ?>">
-                                                                        Ver detalles
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="table-responsive">
+                                    <table class="table pedidos-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Pedido #</th>
+                                                <th>Fecha</th>
+                                                <th>Total</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($pedidos_personales as $pedido): ?>
+                                                    <tr>
+                                                        <td>#<?= str_pad($pedido['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
+                                                        <td><?= date('d/m/Y', strtotime($pedido['fecha_pedido'])) ?></td>
+                                                        <td>B/. <?= number_format($pedido['total'], 2) ?></td>
+                                                        <td>
+                                                            <span
+                                                                class="badge status-<?= $pedido['estado'] ?>"><?= ucfirst($pedido['estado']) ?></span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-primary ver-pedido-cliente"
+                                                                data-id="<?= $pedido['id_pedido'] ?>">
+                                                                Ver detalles
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -217,6 +217,72 @@ ob_start();
         </div>
 
     </div>
+
+<!-- Modal para nuevo producto -->
+<div id="modalNuevoProducto" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Agregar Nuevo Producto</h2>
+        <form id="formNuevoProducto" method="post" action="/artesanoDigital/artesano/productos/crear" enctype="multipart/form-data">
+            <input type="hidden" name="accion" value="crear_producto">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre del Producto</label>
+                <input type="text" id="nombre" name="nombre" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" class="form-textarea" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label for="precio">Precio (B/.)</label>
+                    <input type="number" id="precio" name="precio" class="form-input" min="0" step="0.01" required>
+                </div>
+                <div class="form-group col-6">
+                    <label for="stock">Stock Disponible</label>
+                    <input type="number" id="stock" name="stock" class="form-input" min="0" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label for="id_tienda">Tienda</label>
+                    <select id="id_tienda" name="id_tienda" class="form-select" required>
+                        <!-- Se cargará dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label for="descuento">Descuento (%)</label>
+                    <input type="number" id="descuento" name="descuento" class="form-input" min="0" max="100" value="0">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="imagen">Imagen del Producto</label>
+                <input type="file" id="imagen" name="imagen" class="form-input" accept="image/*" required>
+                <div class="form-help">Imagen principal del producto. Recomendado: 800x800px</div>
+                <div id="imagen-preview" class="mt-2 d-none">
+                    <img src="" alt="Vista previa" style="max-width: 100%; max-height: 200px;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="activo" name="activo" value="1" checked>
+                    Publicar producto inmediatamente
+                </label>
+            </div>
+            
+            <div class="form-buttons">
+                <button type="button" class="btn btn-secondary cancelar-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Producto</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Modal para crear tienda -->
 <div id="modalCrearTienda" class="modal">
@@ -767,287 +833,8 @@ $contenido = ob_get_clean();
 include __DIR__ . '/../layouts/base.php';
 ?>
 
- <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Referencia al select de tiendas
-    const selectTienda = document.getElementById('id_tienda');
-    
-    // Añadir la tienda del artesano al select si existe
-    if (selectTienda) {
-        <?php if ($tieneTienda): ?>
-                // Crear y añadir la opción de la tienda
-                const option = document.createElement('option');
-                option.value = "<?= $tiendaExistente['id_tienda'] ?>";
-                option.textContent = "<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>";
-                option.selected = true;
-                selectTienda.appendChild(option);
-        <?php else: ?>
-                // Si no tiene tienda, mostrar mensaje en el select
-                const option = document.createElement('option');
-                option.value = "";
-                option.textContent = "Primero debes crear una tienda";
-                option.disabled = true;
-                option.selected = true;
-                selectTienda.appendChild(option);
-        <?php endif; ?>
-    }
-    
-    // Vista previa de imagen del producto
-    const inputImagen = document.getElementById('imagen');
-    const imagenPreview = document.getElementById('imagen-preview');
-    if (inputImagen && imagenPreview) {
-        inputImagen.addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagenPreview.classList.remove('d-none');
-                    imagenPreview.querySelector('img').src = e.target.result;
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    }
-    
-    // Mostrar modal de nueva tienda
-    const btnCrearTienda = document.getElementById('btnCrearTienda');
-    const modalCrearTienda = document.getElementById('modalCrearTienda');
-    if (btnCrearTienda && modalCrearTienda) {
-        btnCrearTienda.addEventListener('click', function() {
-            modalCrearTienda.style.display = 'block';
-        });
-    }
-    
-    // Mostrar modal de nuevo producto
-    const btnNuevoProducto = document.getElementById('btnNuevoProducto');
-    const btnNuevoProductoTab = document.getElementById('btnNuevoProductoTab');
-    const btnNuevoProductoEmpty = document.getElementById('btnNuevoProductoEmpty');
-    const modalNuevoProducto = document.getElementById('modalNuevoProducto');
-    
-    [btnNuevoProducto, btnNuevoProductoTab, btnNuevoProductoEmpty].forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', function() {
-                if (!btn.hasAttribute('disabled')) {
-                    modalNuevoProducto.style.display = 'block';
-                }
-            });
-        }
-    });
-    
-    // Cerrar modales
-    document.querySelectorAll('.close, .cancelar-modal').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-        });
-    });
-    
-    // Cerrar modales cuando se hace clic fuera
-    window.addEventListener('click', function(event) {
-        document.querySelectorAll('.modal').forEach(modal => {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        });
-    });
-});
+ </script>
 
-// JavaScript para modal de editar producto
-document.addEventListener('DOMContentLoaded', function() {
-    const modalEditarProducto = document.getElementById('modalEditarProducto');
-    const formEditarProducto = document.getElementById('formEditarProducto');
-    const btnEliminarProducto = document.getElementById('btnEliminarProducto');
-    
-    // Event listener para botones "Ver detalles" - Redirigir a página modularizada
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.btn-ver-detalles')) {
-            e.preventDefault();
-            e.stopPropagation();
-            const btn = e.target.closest('.btn-ver-detalles');
-            const productoId = btn.getAttribute('data-id');
-            console.log('Redirigiendo a detalle de producto ID:', productoId);
-            // Redirigir a la página de detalle modularizada
-            window.location.href = `/artesanoDigital/artesano/detalle_productos?id=${productoId}`;
-        }
-    });
-    
-    // Función para abrir el modal y cargar datos del producto
-    async function abrirModalEditarProducto(productoId) {
-        try {
-            // Mostrar modal
-            modalEditarProducto.style.display = 'block';
-            
-            // Cargar datos del producto
-            const response = await fetch(`/artesanoDigital/artesano/productos/crear?action=obtener&id=${productoId}`);
-            const data = await response.json();
-            
-            if (data.success) {
-                const producto = data.producto;
-                
-                // Llenar el formulario con los datos
-                document.getElementById('editProductoId').value = producto.id_producto;
-                document.getElementById('editNombre').value = producto.nombre;
-                document.getElementById('editDescripcion').value = producto.descripcion;
-                document.getElementById('editPrecio').value = producto.precio;
-                document.getElementById('editStock').value = producto.stock;
-                document.getElementById('editDescuento').value = producto.descuento || 0;
-                document.getElementById('editActivo').checked = producto.activo == 1;
-                
-                // Establecer categoría
-                const selectCategoria = document.getElementById('editCategoria');
-                if (selectCategoria && producto.categoria) {
-                    selectCategoria.value = producto.categoria;
-                }
-                
-                // Cargar tienda
-                const selectTienda = document.getElementById('editTienda');
-                selectTienda.innerHTML = '';
-                const option = document.createElement('option');
-                option.value = producto.id_tienda;
-                option.textContent = producto.nombre_tienda || 'Mi tienda';
-                option.selected = true;
-                selectTienda.appendChild(option);
-                
-                // Mostrar imagen actual si existe
-                const imgActual = document.querySelector('#editImagenActual img');
-                const contenedorImagenActual = document.getElementById('editImagenActual');
-                
-                if (producto.imagen && producto.imagen.trim() !== '') {
-                    // Limpiar la ruta de la imagen
-                    let rutaImagen = producto.imagen;
-                    if (rutaImagen.startsWith('/')) {
-                        rutaImagen = rutaImagen.substring(1);
-                    }
-                    
-                    imgActual.src = '/artesanoDigital/' + rutaImagen;
-                    imgActual.onerror = function() {
-                        console.log('Error al cargar imagen:', this.src);
-                        contenedorImagenActual.style.display = 'none';
-                    };
-                    imgActual.onload = function() {
-                        console.log('Imagen cargada correctamente:', this.src);
-                    };
-                    contenedorImagenActual.style.display = 'block';
-                } else {
-                    contenedorImagenActual.style.display = 'none';
-                }
-                
-            } else {
-                alert('Error al cargar los datos del producto');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al cargar los datos del producto');
-        }
-    }
-    
-    // Vista previa de nueva imagen
-    const inputEditImagen = document.getElementById('editImagen');
-    const editImagenPreview = document.getElementById('editImagenPreview');
-    if (inputEditImagen && editImagenPreview) {
-        inputEditImagen.addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    editImagenPreview.classList.remove('d-none');
-                    editImagenPreview.querySelector('img').src = e.target.result;
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            } else {
-                editImagenPreview.classList.add('d-none');
-            }
-        });
-    }
-    
-    // Manejar eliminación de producto
-    if (btnEliminarProducto) {
-        btnEliminarProducto.addEventListener('click', function() {
-            const productoId = document.getElementById('editProductoId').value;
-            const nombreProducto = document.getElementById('editNombre').value;
-            
-            if (confirm(`¿Estás seguro de que quieres eliminar el producto "${nombreProducto}"? Esta acción no se puede deshacer.`)) {
-                eliminarProducto(productoId);
-            }
-        });
-    }
-    
-    // Función para eliminar producto
-    async function eliminarProducto(productoId) {
-        try {
-            const response = await fetch('/artesanoDigital/artesano/productos/crear', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: `accion=eliminar_producto&producto_id=${productoId}`
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                alert('Producto eliminado exitosamente');
-                modalEditarProducto.style.display = 'none';
-                // Recargar la página para mostrar los cambios
-                window.location.reload();
-            } else {
-                alert('Error al eliminar el producto: ' + (data.message || 'Error desconocido'));
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al eliminar el producto');
-        }
-    }
-    
-    // Manejar envío del formulario de edición
-    if (formEditarProducto) {
-        formEditarProducto.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(formEditarProducto);
-            // Añadir la acción específica para actualizar
-            formData.append('accion', 'actualizar_producto');
-            
-            fetch('/artesanoDigital/artesano/productos/crear', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Producto actualizado exitosamente');
-                    modalEditarProducto.style.display = 'none';
-                    // Recargar la página para mostrar los cambios
-                    window.location.reload();
-                } else {
-                    alert('Error al actualizar el producto: ' + (data.message || 'Error desconocido'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al actualizar el producto');
-            });
-        });
-    }
-    
-    // Cerrar modal al hacer clic en cerrar o cancelar
-    document.querySelectorAll('#modalEditarProducto .close, #modalEditarProducto .cancelar-modal').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            modalEditarProducto.style.display = 'none';
-        });
-    });
-    
-    // Cerrar modal al hacer clic fuera
-    window.addEventListener('click', function(event) {
-        if (event.target == modalEditarProducto) {
-            modalEditarProducto.style.display = 'none';
-        }
-    });
-});
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -1085,11 +872,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Agregar option para la tienda actual del artesano
                 <?php if ($tieneTienda && isset($tiendaExistente['id_tienda'])): ?>
-                        const option = document.createElement('option');
-                        option.value = '<?= htmlspecialchars($tiendaExistente['id_tienda']) ?>';
-                        option.textContent = '<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>';
-                        option.selected = true;
-                        selectTienda.appendChild(option);
+                    const option = document.createElement('option');
+                    option.value = '<?= htmlspecialchars($tiendaExistente['id_tienda']) ?>';
+                    option.textContent = '<?= htmlspecialchars($tiendaExistente['nombre_tienda'] ?? 'Mi tienda') ?>';
+                    option.selected = true;
+                    selectTienda.appendChild(option);
                 <?php endif; ?>
             }
         }
@@ -3264,7 +3051,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     </style>
-    </style>
 
     <script>
         // Inicializar iconos de Lucide
@@ -4099,21 +3885,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar si hay mensajes de toast en la sesión y mostrarlos
     <?php if (isset($_SESSION['toast_mensaje'])): ?>
-                // Si existe la función Toast del sistema principal, usarla
-                if (typeof window.Toast !== 'undefined') {
-                    // Usar sistema Toast global
-                    window.Toast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
-                } else if (typeof NotificacionesToast !== 'undefined') {
-                    // Usar sistema NotificacionesToast
-                    NotificacionesToast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
-                } else {
-                    // Fallback a la función local
-                    mostrarNotificacion('<?php echo addslashes($_SESSION['toast_mensaje']); ?>', '<?php echo $_SESSION['toast_tipo'] === 'exito' ? 'success' : $_SESSION['toast_tipo']; ?>');
-                }
-            <?php
-            // Limpiar los mensajes de la sesión después de usarlos
-            unset($_SESSION['toast_mensaje']);
-            unset($_SESSION['toast_tipo']);
+            // Si existe la función Toast del sistema principal, usarla
+            if (typeof window.Toast !== 'undefined') {
+                // Usar sistema Toast global
+                window.Toast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
+            } else if (typeof NotificacionesToast !== 'undefined') {
+                // Usar sistema NotificacionesToast
+                NotificacionesToast.<?php echo $_SESSION['toast_tipo']; ?>('<?php echo addslashes($_SESSION['toast_mensaje']); ?>');
+            } else {
+                // Fallback a la función local
+                mostrarNotificacion('<?php echo addslashes($_SESSION['toast_mensaje']); ?>', '<?php echo $_SESSION['toast_tipo'] === 'exito' ? 'success' : $_SESSION['toast_tipo']; ?>');
+            }
+        <?php
+        // Limpiar los mensajes de la sesión después de usarlos
+        unset($_SESSION['toast_mensaje']);
+        unset($_SESSION['toast_tipo']);
     endif; ?>
 });
 </script>
