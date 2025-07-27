@@ -400,7 +400,12 @@ switch ($uri) {
         
     case '/artesano/detalle-productos':
         // Mostrar página de detalle y edición de producto para artesanos
-        include 'views/artesano/detalle_productos.php';
+        include 'views/artesano/detalle-productos.php';
+        break;
+        
+    case '/artesano/mis_productos':
+        // Mostrar página de listado de productos del artesano
+        include 'views/artesano/mis_productos.php';
         break;
         
     case '/artesano/tienda/procesar':

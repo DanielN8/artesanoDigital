@@ -92,8 +92,9 @@ ob_start();
         <a href="/artesanoDigital/artesano/tienda" class="dashboard-btn dashboard-btn-green">
             <i class="fas fa-store"></i> <?= $tieneTienda ? 'Administrar' : 'Crear' ?> Mi Tienda
         </a>
-        <a href="/artesanoDigital/artesano/ventas" class="dashboard-btn dashboard-btn-indigo"><i
-                class="fas fa-chart-line"></i> Análisis de Ventas</a>
+        <a href="/artesanoDigital/artesano/mis_productos" class="dashboard-btn dashboard-btn-indigo">
+            <i class="fas fa-chart-line"></i> Mis Productos
+        </a>
     </div>
 
     <!-- Tabs de navegación -->
@@ -101,12 +102,6 @@ ob_start();
         <ul class="tabs-nav">
             <li class="active" data-tab="tab-ventas"><i class="fas fa-store"></i> Mis Ventas</li>
             <li data-tab="tab-compras"><i class="fas fa-shopping-bag"></i> Mis Compras</li>
-            <li data-tab="tab-productos"><i class="fas fa-box"></i> Mis Productos</li>
-            <li data-tab="tab-notificaciones" class="notificaciones-tab">
-                <i class="fas fa-bell"></i> 
-                Notificaciones 
-                <span id="notificacionesBadge" class="notificaciones-badge" style="display: none;">0</span>
-            </li>
         </ul>
     </div>
 
@@ -122,13 +117,6 @@ ob_start();
                             <span class="pedidos-contador" style="margin-right: 15px; font-size: 14px; color: #6c757d;">
                                 Mostrando <?= count($pedidos_recientes ?? []) ?> pedidos
                             </span>
-                            <select id="filtroEstadoPedidos" class="form-control form-control-sm">
-                                <option value="">Todos los estados</option>
-                                <option value="pendiente">Pendientes</option>
-                                <option value="enviado">Enviados</option>
-                                <option value="entregado">Entregados</option>
-                                <option value="cancelado">Cancelados</option>
-                            </select>
                         </div>
                     </div>
                     <div class="card-body">
@@ -227,181 +215,6 @@ ob_start();
                         <?php endif; ?>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- TAB: Mis Productos -->
-        <div id="tab-productos" class="tab-pane">
-            <div class="dashboard-main">
-                <div class="productos-section-minimalist">
-                    <!-- Modern Header -->
-                    <div class="productos-header-modern">
-                        <div class="header-info">
-                            <h2 class="section-title">Mis Productos</h2>
-                            <p class="section-subtitle">Gestiona tu catálogo de productos</p>
-                        </div>
-                        <div class="header-stats">
-                            <div class="stat-card">
-                                <div class="stat-number"><?= count($productos ?? []) ?></div>
-                                <div class="stat-label">PRODUCTOS</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number"><?= array_sum(array_map(function ($p) {
-                                    return $p['stock'] === 0 ? 1 : 0; }, $productos ?? [])) ?></div>
-                                <div class="stat-label">SIN STOCK</div>
-                            </div>
-                        </div>
-                        <button id="btnNuevoProductoTab" class="btn-add-product" <?= !$tieneTienda ? 'disabled title="Primero debes crear una tienda"' : '' ?>>
-                            <i class="fas fa-plus"></i>
-                            Nuevo Producto
-                        </button>
-                    </div>
-
-                    <!-- Filters Section -->
-                    <div class="filters-section">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" id="buscarProductos" class="search-input" placeholder="Buscar productos...">
-                        </div>
-                        <select id="filtroStock" class="filter-select">
-                            <option value="">Todo el stock</option>
-                            <option value="bajo">Stock bajo (< 10)</option>
-                            <option value="agotado">Agotado (0)</option>
-                            <option value="normal">Stock normal</option>
-                        </select>
-                    </div>
-
-                    <!-- Products Grid -->
-                    <div class="products-container">
-                        <?php if (empty($productos ?? [])): ?>
-                                <div class="empty-state-card">
-                                    <div class="empty-icon">
-                                        <i class="fas fa-box-open"></i>
-                                    </div>
-                                    <h3>Aún no tienes productos</h3>
-                                    <p>Comienza a crear productos increíbles para mostrarlos en tu tienda</p>
-                                    <button id="btnNuevoProductoEmpty" class="btn-create-first" <?= !$tieneTienda ? 'disabled title="Primero debes crear una tienda"' : '' ?>>
-                                        <i class="fas fa-plus"></i>
-                                        Crear mi primer producto
-                                    </button>
-                                </div>
-                        <?php else: ?>
-                                <div class="products-grid" id="productosGrid">
-                                    <?php foreach ($productos as $producto):
-                                        $tieneDescuento = isset($producto['descuento']) && $producto['descuento'] > 0;
-                                        $precioOriginal = floatval($producto['precio']);
-                                        $descuento = floatval($producto['descuento'] ?? 0);
-                                        $precioFinal = $tieneDescuento ? max(0, $precioOriginal - $descuento) : $precioOriginal;
-
-                                        $stockStatus = 'normal';
-                                        if ($producto['stock'] <= 0) {
-                                            $stockStatus = 'agotado';
-                                        } elseif ($producto['stock'] < 10) {
-                                            $stockStatus = 'bajo';
-                                        }
-                                        ?>
-                                        <div class="product-card" data-id="<?= $producto['id_producto'] ?>">
-                                            <div class="product-image-container">
-                                                <?php if (!empty($producto['imagen'])): ?>
-                                                        <img src="/artesanoDigital/<?= htmlspecialchars($producto['imagen']) ?>" 
-                                                             alt="<?= htmlspecialchars($producto['nombre']) ?>"
-                                                             class="product-image">
-                                                <?php else: ?>
-                                                        <div class="placeholder-image">
-                                                            <i class="fas fa-image"></i>
-                                                        </div>
-                                                <?php endif; ?>
-                                        
-                                                <?php if ($tieneDescuento): ?>
-                                                        <div class="discount-badge">
-                                                            -B/.<?= number_format($descuento, 2) ?>
-                                                        </div>
-                                                <?php endif; ?>
-                                        
-                                                <div class="status-indicator <?= $producto['activo'] ? 'active' : 'inactive' ?>">
-                                                    <?= $producto['activo'] ? 'Activo' : 'Inactivo' ?>
-                                                </div>
-                                            </div>
-                                    
-                                            <div class="product-details">
-                                                <h4 class="product-name"><?= htmlspecialchars($producto['nombre']) ?></h4>
-                                                <p class="product-description">
-                                                    <?= strlen($producto['descripcion'] ?? '') > 80 ? substr($producto['descripcion'], 0, 80) . '...' : ($producto['descripcion'] ?? 'Sin descripción') ?>
-                                                </p>
-                                        
-                                                <div class="product-meta">
-                                                    <div class="price-section">
-                                                        <?php if ($tieneDescuento): ?>
-                                                                <span class="original-price">B/. <?= number_format($precioOriginal, 2) ?></span>
-                                                                <span class="final-price">B/. <?= number_format($precioFinal, 2) ?></span>
-                                                        <?php else: ?>
-                                                                <span class="current-price">B/. <?= number_format($precioOriginal, 2) ?></span>
-                                                        <?php endif; ?>
-                                                    </div>
-                                            
-                                                    <div class="stock-section">
-                                                        <span class="stock-indicator stock-<?= $stockStatus ?>">
-                                                            <i class="fas fa-boxes"></i>
-                                                            <?= $producto['stock'] ?> unidades
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                    
-                                            <div class="product-actions">
-                                                <button class="btn-view-details btn-ver-detalles" 
-                                                        data-id="<?= $producto['id_producto'] ?>"
-                                                        title="Ver detalles">
-                                                    <i class="fas fa-eye"></i>
-                                                    Ver detalles
-                                                </button>
-                                            </div>
-                                    
-
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
- 
-        <!-- TAB: Notificaciones -->
-        <div id="tab-notificaciones" class="tab-pane">
-            <div class="dashboard-main">
-            <div class="card">
-                <div class="card-header">
-                <h3>Mis Notificaciones</h3>
-                <div class="card-header-actions">
-                    <select id="filtroNotificaciones" class="form-control form-control-sm">
-                    <option value="todas">Todas</option>
-                    <option value="nuevo_pedido">Nuevos pedidos</option>
-                    <option value="estado_actualizado">Actualizaciones de estado</option>
-                    <option value="stock_bajo">Alertas de stock</option>
-                    </select>
-                    <button id="marcarTodasLeidas" class="btn btn-sm btn-outline-secondary ml-2">
-                    <i class="fas fa-check-double"></i> Marcar todas como leídas
-                    </button>
-                </div>
-                </div>
-                <div class="card-body">
-                <div id="notificacionesContainer" class="notificaciones-lista">
-                    <!-- Las notificaciones se cargarán dinámicamente -->
-                    <div class="loading-spinner">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Cargando notificaciones...</p>
-                    </div>
-                </div>
-                
-                <!-- Paginación -->
-                <div id="paginacionNotificaciones" class="pagination-container" style="display: none;">
-                    <ul class="pagination">
-                    <!-- La paginación se generará dinámicamente -->
-                    </ul>
-                </div>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -1022,7 +835,7 @@ $contenido = ob_get_clean();
 include __DIR__ . '/../layouts/base.php';
 ?>
 
-<script>
+ </script>
 document.addEventListener('DOMContentLoaded', function() {
     // Referencia al select de tiendas
     const selectTienda = document.getElementById('id_tienda');
@@ -2134,35 +1947,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Esta función se puede expandir para hacer una llamada AJAX si es necesario
             console.log('Cargando pedidos recientes...');
         }
-
-        // Función para actualizar contador de notificaciones
-        async function actualizarContadorNotificaciones() {
-            try {
-                const response = await fetch('/artesanoDigital/api/notificaciones.php?action=contar');
-                const data = await response.json();
-                
-                if (data.success) {
-                    const notificacionesNoLeidas = data.data.total_no_leidas;
-                    const badge = document.getElementById('notificacionesBadge');
-                    
-                    if (badge) {
-                        if (notificacionesNoLeidas > 0) {
-                            badge.textContent = notificacionesNoLeidas;
-                            badge.style.display = 'inline-flex';
-                        } else {
-                            badge.style.display = 'none';
-                        }
-                    }
-                } else {
-                    console.error('Error al obtener contador de notificaciones:', data.error);
-                }
-            } catch (error) {
-                console.error('Error de conexión al obtener contador de notificaciones:', error);
-            }
-        }
-
-        // Cargar contador al inicializar
-        actualizarContadorNotificaciones();
 
         // Actualizar contador cada 30 segundos
         setInterval(actualizarContadorNotificaciones, 30000);

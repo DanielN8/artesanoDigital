@@ -34,7 +34,9 @@ try {
     
     switch ($method) {
         case 'GET':
-            if (isset($pathParts[0]) && is_numeric($pathParts[0])) {
+            if (isset($_GET['accion']) && $_GET['accion'] === 'obtener_tienda') {
+                obtenerTiendaArtesano($db);
+            } elseif (isset($pathParts[0]) && is_numeric($pathParts[0])) {
                 $productoId = $pathParts[0];
                 obtenerProducto($db, $productoId);
             } elseif (isset($_GET['id']) && is_numeric($_GET['id'])) {
@@ -46,7 +48,16 @@ try {
             break;
             
         case 'POST':
-            if (isset($pathParts[0]) && is_numeric($pathParts[0])) {
+            // Verificar si hay una acción específica en los datos POST
+            $accion = $_POST['accion'] ?? null;
+            
+            if ($accion === 'actualizar_producto' && isset($_POST['id_producto'])) {
+                $productoId = $_POST['id_producto'];
+                actualizarProductoFormData($db, $productoId);
+            } elseif ($accion === 'eliminar_producto' && isset($_POST['id_producto'])) {
+                $productoId = $_POST['id_producto'];
+                eliminarProducto($db, $productoId);
+            } elseif (isset($pathParts[0]) && is_numeric($pathParts[0])) {
                 $productoId = $pathParts[0];
                 
                 if (isset($pathParts[1])) {
@@ -76,7 +87,18 @@ try {
             break;
             
         case 'DELETE':
-            if (isset($pathParts[0]) && is_numeric($pathParts[0])) {
+            // Parsear datos del cuerpo para DELETE requests
+            $deleteData = [];
+            if (!empty(file_get_contents('php://input'))) {
+                parse_str(file_get_contents('php://input'), $deleteData);
+            }
+            
+            // Manejar DELETE con datos del cuerpo o POST para compatibilidad
+            if ((isset($_POST['accion']) && $_POST['accion'] === 'eliminar_producto' && isset($_POST['id_producto'])) ||
+                (isset($deleteData['accion']) && $deleteData['accion'] === 'eliminar_producto' && isset($deleteData['id_producto']))) {
+                $productoId = $_POST['id_producto'] ?? $deleteData['id_producto'];
+                eliminarProducto($db, $productoId);
+            } elseif (isset($pathParts[0]) && is_numeric($pathParts[0])) {
                 $productoId = $pathParts[0];
                 eliminarProducto($db, $productoId);
             } else {
@@ -294,6 +316,85 @@ function actualizarProducto($db, $productoId) {
             if (isset($input[$campo])) {
                 $campos[] = "$campo = ?";
                 $valores[] = $input[$campo];
+            }
+        }
+        
+        if (empty($campos)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No hay datos para actualizar']);
+            return;
+        }
+        
+        $valores[] = $productoId;
+        
+        $query = "UPDATE productos SET " . implode(', ', $campos) . " WHERE id_producto = ?";
+        
+        $stmt = $db->prepare($query);
+        $resultado = $stmt->execute($valores);
+        
+        if ($resultado) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Producto actualizado exitosamente'
+            ]);
+        } else {
+            throw new Exception('Error al actualizar producto');
+        }
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error al actualizar producto: ' . $e->getMessage()]);
+    }
+}
+
+function actualizarProductoFormData($db, $productoId) {
+    try {
+        $artesanoId = $_SESSION['usuario_id'];
+        
+        // Verificar que el producto pertenezca al artesano
+        $verificacion = "
+            SELECT p.id_producto 
+            FROM productos p
+            JOIN tiendas t ON p.id_tienda = t.id_tienda
+            WHERE p.id_producto = ? AND t.id_usuario = ?
+        ";
+        
+        $stmt = $db->prepare($verificacion);
+        $stmt->execute([$productoId, $artesanoId]);
+        
+        if (!$stmt->fetch()) {
+            http_response_code(403);
+            echo json_encode(['error' => 'No autorizado para modificar este producto']);
+            return;
+        }
+        
+        // Construir query de actualización dinámicamente
+        $campos = [];
+        $valores = [];
+        
+        $camposPermitidos = ['nombre', 'descripcion', 'precio', 'descuento', 'stock', 'activo'];
+        
+        foreach ($camposPermitidos as $campo) {
+            if (isset($_POST[$campo])) {
+                $campos[] = "$campo = ?";
+                $valores[] = $_POST[$campo];
+            }
+        }
+        
+        // Manejar upload de imagen si existe
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = dirname(__FILE__) . '/../uploads/productos/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $fileExtension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+            $fileName = 'prod_' . uniqid() . '.' . $fileExtension;
+            $filePath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $filePath)) {
+                $campos[] = "imagen = ?";
+                $valores[] = $fileName;
             }
         }
         
@@ -545,6 +646,31 @@ function duplicarProducto($db, $productoId) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Error al duplicar producto: ' . $e->getMessage()]);
+    }
+}
+
+function obtenerTiendaArtesano($db) {
+    try {
+        $artesanoId = $_SESSION['usuario_id'];
+        
+        $query = "SELECT id_tienda, nombre_tienda FROM tiendas WHERE id_usuario = ?";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$artesanoId]);
+        $tienda = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($tienda) {
+            echo json_encode([
+                'success' => true,
+                'tienda' => $tienda
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Tienda no encontrada']);
+        }
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error al obtener tienda: ' . $e->getMessage()]);
     }
 }
 ?>
