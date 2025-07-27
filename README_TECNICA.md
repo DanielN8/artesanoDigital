@@ -37,21 +37,10 @@ Artesano Digital es una plataforma e-commerce para artesanos de Panamá Oeste. P
    cd artesano_digital
    ```
 2. Coloca el proyecto en `c:/xampp/htdocs/artesanoDigital` (renombrar la carpeta del proyecto a "artesanoDigital")
-3. Crea la base de datos y ejecuta los scripts:
-   - `estructura.sql`
+3. Crea la base de datos con el nombre 'artesano_digital' y ejecuta los scripts:
    - `artesano_digital.sql`
-4. Configura variables de entorno en `config/DotEnv.php` o `.env`
-5. Instala dependencias PHP:
-   ```bash
-   composer install
-   ```
-6. Instala dependencias frontend:
-   ```bash
-   npm install
-   npm run build
-   ```
-7. Inicia Apache y MySQL desde XAMPP
-8. Accede a `http://localhost/artesanoDigital/`
+4. Inicia Apache y MySQL desde XAMPP
+5. Accede a `http://localhost/artesanoDigital/`
 
 ## 3. Arquitectura del Sistema
 - **MVC**: Separación en Modelos, Vistas y Controladores
