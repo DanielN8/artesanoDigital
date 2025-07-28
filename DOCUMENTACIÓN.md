@@ -15,8 +15,6 @@
 6. Estructura de Carpetas
 7. API Endpoints
 8. Seguridad
-9. Testing
-10. Equipo y Contacto
 
 ---
 
@@ -33,15 +31,23 @@ Artesano Digital es una plataforma e-commerce para artesanos de Panamá Oeste. P
 ### Instalación
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/DanielN8/artesano_digital.git
+   git clone https://github.com/DanielN8/artesanoDigital.git
    cd artesano_digital
    ```
 2. Coloca el proyecto en `c:/xampp/htdocs/artesanoDigital` (renombrar la carpeta del proyecto a "artesanoDigital")
-3. Crea la base de datos con el nombre 'artesano_digital' y ejecuta los scripts:
+3. Crea la base de datos con el nombre 'artesano_digital' y ejecuta el script:
    - `artesano_digital.sql`
 4. Inicia Apache y MySQL desde XAMPP
 5. Accede a `http://localhost/artesanoDigital/`
 
+- Usuario de prueba
+- Cliente:
+    - Usuario: clientetest@gmail.com
+    - Contraseña: password123
+- Artesano:
+    - Usuario: artesanotest@gmail.com
+    - Contraseña: password123
+    
 ## 3. Arquitectura del Sistema
 - **MVC**: Separación en Modelos, Vistas y Controladores
 - **API REST**: Endpoints para productos, pedidos, notificaciones
@@ -144,7 +150,7 @@ artesanoDigital/
 ├── estructura.sql      # Esquema BD
 ├── composer.json       # Dependencias PHP
 ├── package.json        # Dependencias JS
-└── README.md           # Documentación principal
+└── DOCUMENTACION.md           # Documentación principal
 ```
 
 ## 7. API Endpoints

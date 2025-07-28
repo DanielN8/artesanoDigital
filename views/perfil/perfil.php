@@ -38,7 +38,8 @@ ob_start();
 
                 <form class="perfil-form" method="POST" action="/artesanoDigital/perfil">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                    
+                    <input type="hidden" name="form_type" value="actualizar_perfil">
+
                     <div class="form-group">
                         <label for="nombre" class="form-label">Nombre Completo</label>
                         <input 
@@ -122,7 +123,8 @@ ob_start();
 
                 <form class="perfil-form" method="POST" action="/artesanoDigital/perfil">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                    
+                    <input type="hidden" name="form_type" value="cambiar_password">
+
                     <div class="form-group">
                         <label for="password_actual" class="form-label">Contraseña Actual</label>
                         <input 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2025 at 10:40 AM
+-- Generation Time: Jul 28, 2025 at 04:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -190,11 +190,21 @@ INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `estado`, `metodo_pago`, `tota
 (25, 6, 'en_proceso', 'tarjeta', 281.00, 281.00, 0.00, '2025-07-25 22:49:37', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"sadasdas\",\"ciudad\":\"Chame\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
 (26, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-25 23:55:05', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-1234\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
 (27, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:15:55', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 17:13:51'),
-(28, 6, 'pendiente', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:21:19', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasds\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 06:39:20'),
+(28, 6, 'cancelado', 'yappy', 281.00, 281.00, 0.00, '2025-07-26 00:21:19', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasds\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-28 14:09:16'),
 (29, 10, 'confirmado', 'yappy', 105.00, 110.00, 5.00, '2025-07-26 15:12:59', NULL, NULL, NULL, NULL, 'Bella Vista, Ciudad de Panamá', 'Envío estándar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 20:12:59'),
 (30, 7, 'pendiente', 'yappy', 359.50, NULL, 0.00, '2025-07-26 17:07:50', NULL, NULL, NULL, NULL, '{\"nombre\":\"Luis Mendoza\",\"direccion\":\"Calle principal, Casa 123\",\"ciudad\":\"La Chorrera\",\"telefono\":\"6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 22:07:50'),
 (31, 7, 'pendiente', 'tarjeta', 359.50, NULL, 0.00, '2025-07-26 17:48:16', NULL, NULL, NULL, NULL, '{\"nombre\":\"Luis Mendoza\",\"direccion\":\"Calle principal, Casa 123\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-26 22:48:16'),
-(32, 7, 'pendiente', 'tarjeta', 54.00, NULL, 0.00, '2025-07-26 23:06:35', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"adasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 04:06:35');
+(32, 7, 'pendiente', 'tarjeta', 54.00, NULL, 0.00, '2025-07-26 23:06:35', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"adasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 04:06:35'),
+(33, 7, 'pendiente', 'yappy', 220.50, NULL, 0.00, '2025-07-27 11:14:24', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"Aqui\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 16:14:24'),
+(34, 7, 'pendiente', 'yappy', 220.50, NULL, 0.00, '2025-07-27 11:41:48', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asd\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 16:41:48'),
+(35, 7, 'pendiente', 'yappy', 220.50, NULL, 0.00, '2025-07-27 12:42:36', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"231\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 17:42:36'),
+(36, 7, 'pendiente', 'yappy', 220.50, NULL, 0.00, '2025-07-27 13:01:25', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asd\",\"ciudad\":\"Capira\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 18:01:25'),
+(37, 7, 'pendiente', 'yappy', 81.00, NULL, 0.00, '2025-07-27 13:04:39', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 18:04:39'),
+(38, 7, 'pendiente', 'yappy', 81.00, NULL, 0.00, '2025-07-27 13:05:46', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdsa\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 18:05:46'),
+(39, 7, 'pendiente', 'yappy', 81.00, NULL, 0.00, '2025-07-27 13:50:12', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"dasdsad\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 18:50:12'),
+(40, 7, 'pendiente', 'tarjeta', 81.00, NULL, 0.00, '2025-07-27 15:06:46', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asd\",\"ciudad\":\"Arraij\\u00e1n\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 20:06:46'),
+(41, 11, 'pendiente', 'yappy', 35.00, NULL, 0.00, '2025-07-27 15:16:49', NULL, NULL, NULL, NULL, '{\"nombre\":\"clientetest\",\"direccion\":\"asd\",\"ciudad\":\"La Chorrera\",\"telefono\":\"6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-27 20:16:49'),
+(42, 6, 'en_proceso', 'yappy', 590.00, NULL, 0.00, '2025-07-27 15:19:54', NULL, NULL, NULL, NULL, '{\"nombre\":\"Daniel\",\"direccion\":\"asdasdas\",\"ciudad\":\"La Chorrera\",\"telefono\":\"+507 6000-0000\"}', 'Env├¡o est├índar', NULL, '3-5 d├¡as h├íbiles', NULL, NULL, NULL, NULL, '2025-07-28 13:50:56');
 
 -- --------------------------------------------------------
 
@@ -233,7 +243,17 @@ INSERT INTO `pedido_eventos` (`id_evento`, `id_pedido`, `tipo`, `descripcion`, `
 (19, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 01:17:14', 7),
 (20, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-27 04:46:01', 7),
 (21, 28, 'estado_cambio', 'Estado cambiado a: cancelado', '2025-07-27 06:39:16', 7),
-(22, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 06:39:20', 7);
+(22, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 06:39:20', 7),
+(23, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-27 21:09:08', 7),
+(24, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-27 21:09:10', 7),
+(25, 28, 'estado_cambio', 'Estado cambiado a: cancelado', '2025-07-27 21:30:02', 7),
+(26, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-27 21:34:05', 7),
+(27, 42, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-28 13:50:51', 12),
+(28, 42, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-28 13:50:56', 12),
+(29, 28, 'estado_cambio', 'Estado cambiado a: pendiente', '2025-07-28 14:09:02', 7),
+(30, 28, 'estado_cambio', 'Estado cambiado a: en_proceso', '2025-07-28 14:09:06', 7),
+(31, 28, 'estado_cambio', 'Estado cambiado a: entregado', '2025-07-28 14:09:14', 7),
+(32, 28, 'estado_cambio', 'Estado cambiado a: cancelado', '2025-07-28 14:09:16', 7);
 
 -- --------------------------------------------------------
 
@@ -299,7 +319,25 @@ INSERT INTO `pedido_productos` (`id_pedido_producto`, `id_pedido`, `id_producto`
 (94, 31, 1, 2, 33.00, 0.00),
 (95, 31, 16, 8, 35.00, 0.00),
 (96, 31, 17, 1, 13.50, 0.00),
-(97, 32, 1, 6, 9.00, 0.00);
+(97, 32, 1, 6, 9.00, 0.00),
+(98, 33, 1, 3, 33.00, 0.00),
+(99, 33, 17, 3, 13.50, 0.00),
+(100, 33, 14, 3, 27.00, 0.00),
+(101, 34, 1, 3, 33.00, 0.00),
+(102, 34, 17, 3, 13.50, 0.00),
+(103, 34, 14, 3, 27.00, 0.00),
+(104, 35, 1, 3, 33.00, 0.00),
+(105, 35, 17, 3, 13.50, 0.00),
+(106, 35, 14, 3, 27.00, 0.00),
+(107, 36, 1, 3, 33.00, 0.00),
+(108, 36, 17, 3, 13.50, 0.00),
+(109, 36, 14, 3, 27.00, 0.00),
+(110, 37, 14, 3, 27.00, 0.00),
+(111, 38, 14, 3, 27.00, 0.00),
+(112, 39, 14, 3, 27.00, 0.00),
+(113, 40, 14, 3, 27.00, 0.00),
+(114, 41, 16, 1, 35.00, 0.00),
+(115, 42, 35, 5, 118.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -325,7 +363,7 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `id_tienda`, `nombre`, `descripcion`, `precio`, `descuento`, `imagen`, `stock`, `activo`, `fecha_creacion`) VALUES
-(1, 1, 'Mola Tradicional', 'Mola auténtica hecha por artesanas gunas con diseños tradicionales', 45.00, 12.00, 'public/productos/prod_687d53cc28804_472775.jpg', 0, 1, '2025-07-17 10:43:51'),
+(1, 1, 'Mola Tradicional', 'Mola auténtica hecha por artesanas gunas con diseños tradicionales', 45.00, 12.00, 'public/productos/prod_687d53cc28804_472775.jpg', -12, 1, '2025-07-17 10:43:51'),
 (2, 1, 'Sombrero Pintao', 'Sombrero pintao tejido a mano con fibras naturales', 35.00, 3.50, 'productos/sombrero1.jpg', 4, 1, '2025-07-17 10:43:51'),
 (3, 1, 'Pulsera de Tagua', 'Pulsera elaborada con semillas de tagua, diseño único', 12.00, 1.00, 'productos/pulsera1.jpg', 13, 1, '2025-07-17 10:43:51'),
 (4, 2, 'Vasija de Barro', 'Vasija decorativa de barro cocido con motivos precolombinos', 28.00, 4.00, 'productos/vasija1.jpg', 11, 1, '2025-07-17 10:43:51'),
@@ -338,10 +376,13 @@ INSERT INTO `productos` (`id_producto`, `id_tienda`, `nombre`, `descripcion`, `p
 (11, 4, 'Cintillo Emberá', 'Cintillo artesanal elaborado con chaquiras por mujeres Emberá', 223.00, 2.00, 'public/productos/prod_68843a3841062_test-image.jpg', 19, 1, '2025-07-25 21:15:20'),
 (12, 4, 'Imán de Tagua Pintado', 'Imán decorativo hecho con tagua tallada y pintada con motivos panameños', 123.00, 3.00, 'public/productos/prod_688506510261d_test-image.jpg', 1, 1, '2025-07-26 11:46:09'),
 (13, 5, 'Collar de Chaquira', 'Collar tradicional Emberá con cuentas de colores vivos', 25.00, 5.00, 'productos/collar_chaquira.jpg', 20, 1, '2025-07-26 15:12:59'),
-(14, 6, 'Canasta Ngäbe', 'Canasta tejida a mano con palma natural', 30.00, 3.00, 'productos/canasta_ngabe.jpg', 12, 1, '2025-07-26 15:12:59'),
-(16, 1, 'Pintura sobre Tagua', 'Semilla tallada y pintada con motivos autóctonos panameños', 40.00, 5.00, 'public/productos/tagua.png', 2, 1, '2025-07-26 15:12:59'),
-(17, 2, 'Mini Tambor Artesanal', 'Mini tambor típico panameño, decorado a mano', 15.00, 1.50, 'public/productos/tambor.jpg', 28, 1, '2025-07-26 15:12:59'),
-(18, 3, 'Pintura de la Pollera', 'Pintura sobre lienzo representando una pollera panameña', 80.00, 8.00, 'public/productos/pollera.jpg', 10, 1, '2025-07-26 15:12:59');
+(14, 6, 'Canasta Ngäbe', 'Canasta tejida a mano con palma natural', 30.00, 3.00, 'productos/canasta_ngabe.jpg', -12, 1, '2025-07-26 15:12:59'),
+(16, 1, 'Pintura sobre Tagua', 'Semilla tallada y pintada con motivos autóctonos panameños', 40.00, 5.00, 'public/productos/tagua.png', 1, 1, '2025-07-26 15:12:59'),
+(17, 2, 'Mini Tambor Artesanal', 'Mini tambor típico panameño, decorado a mano', 15.00, 1.50, 'public/productos/tambor.jpg', 16, 1, '2025-07-26 15:12:59'),
+(18, 3, 'Pintura de la Pollera', 'Pintura sobre lienzo representando una pollera panameña', 80.00, 8.00, 'public/productos/pollera.jpg', 10, 1, '2025-07-26 15:12:59'),
+(35, 7, 'producto', 'asd', 123.00, 5.00, 'prod_68868ded8e196.png', 118, 1, '2025-07-27 15:18:54'),
+(37, 4, 'Daniel', 'asd', 2.00, 2.00, 'public/productos/prod_688694b582165_test-image.jpg', 12, 1, '2025-07-27 16:05:57'),
+(38, 4, 'Daniel', 'asd', 12.00, 2.00, 'public/productos/prod_688695a9ed401_test-image.jpg', 2, 1, '2025-07-27 16:10:01');
 
 -- --------------------------------------------------------
 
@@ -398,7 +439,8 @@ INSERT INTO `tiendas` (`id_tienda`, `id_usuario`, `nombre_tienda`, `descripcion`
 (3, 3, 'Textiles Ana', 'Textiles únicos con diseños autóctonos de Panamá', 'logos/ana_logo.jpg', '2025-07-17 10:43:51'),
 (4, 7, 'Tienda de Daniel', 'Los mejores productos que puedes encontrar', 'logos/tienda_68858754572a7.jpg', '2025-07-19 22:41:08'),
 (5, 8, 'Arte Emberá', 'Joyería y tejidos ancestrales hechos por artesanas Emberá', 'logos/arte_embera_logo.jpg', '2025-07-26 15:12:59'),
-(6, 9, 'Canastas Ngäbe', 'Canastas y figuras hechas con palma natural', 'logos/ngabe_logo.jpg', '2025-07-26 15:12:59');
+(6, 9, 'Canastas Ngäbe', 'Canastas y figuras hechas con palma natural', 'logos/ngabe_logo.jpg', '2025-07-26 15:12:59'),
+(7, 12, 'Los artesanitos', 'Productos hecho a mano', 'logos/tienda_6886898bcf325.png', '2025-07-27 15:18:19');
 
 -- --------------------------------------------------------
 
@@ -428,11 +470,13 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `correo`, `telefono`, `direccion
 (3, 'Ana Rodríguez', 'ana.textiles@email.com', '6003-4567', 'Capira, Panamá Oeste', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'artesano', '2025-07-17 10:43:51', 1),
 (4, 'Pedro Jiménez', 'pedro.cliente@email.com', '6004-5678', 'Ciudad de Panamá', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', '2025-07-17 10:43:51', 1),
 (5, 'Sofía Herrera', 'sofia.cliente@email.com', '6005-6789', 'San Miguelito', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', '2025-07-17 10:43:51', 1),
-(6, 'Daniel', 'daniel@gmail.com', '+507 6000-0000', '', '$2y$10$vctISzZQiBVlp4OBZwA8ouR2EWw7R7/GRaya4Um6QucQj7tcDE/9q', 'cliente', '2025-07-17 10:44:47', 1),
-(7, 'Daniel', 'danielartesano@gmail.com', '+507 6000-0000', '', '$2y$10$2ZJZLG0sv7MK6WK/lOo1bO3PHJyzYHcUp8piEPjit11Ha4igYdPEu', 'artesano', '2025-07-18 12:39:21', 1),
+(6, 'clientetest', 'cliente@gmail.com', '+507 6000-0000', '', '$2y$10$ZlnzPJSYQGCWOlZW74a8puYaI3cBr2TyX6zIHlw/4TmLnAPpMRIeO', 'cliente', '2025-07-17 10:44:47', 1),
+(7, 'artesanotest', 'artesanotest@gmail.com', '+507 6000-0000', '', '$2y$10$P6UqZUdrM.ST01ungtWRler.Lzf4Hkr3ZWlO/EL3Iz3MaI6f12HQm', 'artesano', '2025-07-18 12:39:21', 1),
 (8, 'Gloria Ortega', 'gloria.embera@email.com', '6008-1111', 'Comarca Emberá-Wounaan', '$2y$10$VYb9TAF3xqNjWuvWMsqxWeCNRkLn1jA9VSMTvq9PDn1ZrdgAWTfSm', 'artesano', '2025-07-26 15:12:59', 1),
 (9, 'Luis Vega', 'luis.ngabe@email.com', '6009-2222', 'Comarca Ngäbe-Buglé', '$2y$10$VYb9TAF3xqNjWuvWMsqxWeCNRkLn1jA9VSMTvq9PDn1ZrdgAWTfSm', 'artesano', '2025-07-26 15:12:59', 1),
-(10, 'Mónica Pérez', 'monica.cliente@email.com', '6010-3333', 'Bella Vista, Ciudad de Panamá', '$2y$10$VYb9TAF3xqNjWuvWMsqxWeCNRkLn1jA9VSMTvq9PDn1ZrdgAWTfSm', 'cliente', '2025-07-26 15:12:59', 1);
+(10, 'Mónica Pérez', 'monica.cliente@email.com', '6010-3333', 'Bella Vista, Ciudad de Panamá', '$2y$10$VYb9TAF3xqNjWuvWMsqxWeCNRkLn1jA9VSMTvq9PDn1ZrdgAWTfSm', 'cliente', '2025-07-26 15:12:59', 1),
+(11, 'clientetest', 'clientetest@gmail.com', '+507 6000-0000', '', '$2y$10$HAUjaNdriRUcJ3/CPqUMUuLQcvmnnBiegRMSy.b6rR/JI8bWy/Sy.', 'cliente', '2025-07-27 15:16:20', 1),
+(12, 'artesanotest', 'artesanotest22@gmail.com', '+507 6000-0000', '', '$2y$10$WIGYq3xek7xDFbwVqsc57u8CG2IOyGR1eP8GI37qJuu8idnkHVs16', 'artesano', '2025-07-27 15:17:21', 1);
 
 --
 -- Indexes for dumped tables
@@ -556,25 +600,25 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT for table `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `pedido_eventos`
 --
 ALTER TABLE `pedido_eventos`
-  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `pedido_productos`
 --
 ALTER TABLE `pedido_productos`
-  MODIFY `id_pedido_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id_pedido_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT for table `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `recuperaciones_contrasena`
@@ -586,13 +630,13 @@ ALTER TABLE `recuperaciones_contrasena`
 -- AUTO_INCREMENT for table `tiendas`
 --
 ALTER TABLE `tiendas`
-  MODIFY `id_tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

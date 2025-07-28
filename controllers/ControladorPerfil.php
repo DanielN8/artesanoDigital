@@ -36,24 +36,54 @@ class ControladorPerfil
     /**
      * Muestra el perfil del usuario
      */
-    public function mostrarPerfil(): void 
-    {
-        $usuario = $this->gestorAuth->obtenerUsuarioActual();
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->actualizarPerfil($usuario['id_usuario']);
+public function mostrarPerfil(): void 
+{
+    $usuario = $this->gestorAuth->obtenerUsuarioActual();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            // Validar token CSRF
+            if (!$this->gestorAuth->verificarTokenCSRF($_POST['csrf_token'] ?? '')) {
+                throw new \Exception('Token de seguridad inválido');
+            }
+
+            $formType = $_POST['form_type'] ?? '';
+
+            if ($formType === 'cambiar_password') {
+                // Cambio de contraseña
+                $this->cambiarPassword(
+                    $usuario['id_usuario'],
+                    $_POST['password_actual'] ?? '',
+                    $_POST['password_nuevo'] ?? '',
+                    $_POST['password_confirmar'] ?? ''
+                );
+
+                $_SESSION['mensaje_exito'] = 'Contraseña actualizada correctamente';
+            } else {
+                // Actualización de perfil
+                $this->actualizarPerfil($usuario['id_usuario']);
+                $_SESSION['mensaje_exito'] = 'Perfil actualizado correctamente';
+            }
+        } catch (\Exception $e) {
+            $_SESSION['mensaje_error'] = $e->getMessage();
         }
 
-        // Obtener información completa del usuario de la base de datos
-        $datosUsuario = $this->obtenerDatosCompletos($usuario['id_usuario']);
-
-        $datos = [
-            'titulo' => 'Mi Perfil',
-            'usuario' => $datosUsuario
-        ];
-
-        $this->cargarVista('perfil/perfil', $datos);
+        // Redirigir después del POST
+        header('Location: /artesanoDigital/perfil');
+        exit;
     }
+
+    // Obtener información completa del usuario de la base de datos
+    $datosUsuario = $this->obtenerDatosCompletos($usuario['id_usuario']);
+
+    $datos = [
+        'titulo' => 'Mi Perfil',
+        'usuario' => $datosUsuario
+    ];
+
+    $this->cargarVista('perfil/perfil', $datos);
+}
+
 
     /**
      * Actualiza la información del perfil
@@ -71,9 +101,14 @@ class ControladorPerfil
             $correo = trim($_POST['correo'] ?? '');
             $telefono = trim($_POST['telefono'] ?? '');
             
+            if (!isset($_POST['form_type']) || $_POST['form_type'] !== 'actualizar_perfil') {
+                return;
+            }
+
             if (empty($nombre) || empty($correo)) {
                 throw new \Exception('El nombre y correo son obligatorios');
             }
+
 
             // Verificar si el correo ya existe (excepto el propio)
             $sql = "SELECT id_usuario FROM usuarios WHERE correo = :correo AND id_usuario != :id_usuario";
